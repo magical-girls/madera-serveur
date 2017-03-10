@@ -7,20 +7,17 @@ public class Composant {
 	private Float prixHT;
 	private String commentaire;
 	private Float stock;
-	private Integer idFournisseur;
 
 	public Composant() {
 	}
 
-	public Composant(String idReference, String nom, Float prixHT, String commentaire, Float stock,
-			Integer idFournisseur) {
+	public Composant(String idReference, String nom, Float prixHT, String commentaire, Float stock) {
 		super();
 		this.idReference = idReference;
 		this.nom = nom;
 		this.prixHT = prixHT;
 		this.commentaire = commentaire;
 		this.stock = stock;
-		this.idFournisseur = idFournisseur;
 	}
 
 	public String getIdReference() {
@@ -63,18 +60,10 @@ public class Composant {
 		this.stock = stock;
 	}
 
-	public Integer getIdFournisseur() {
-		return idFournisseur;
-	}
-
-	public void setIdFournisseur(Integer idFournisseur) {
-		this.idFournisseur = idFournisseur;
-	}
-
-	@Override
+		@Override
 	public String toString() {
 		return "Composant [idReference=" + idReference + ", nom=" + nom + ", prixHT=" + prixHT + ", commentaire="
-				+ commentaire + ", stock=" + stock + ", idFournisseur=" + idFournisseur + "]";
+				+ commentaire + ", stock=" + stock + "]";
 	}
 
 }

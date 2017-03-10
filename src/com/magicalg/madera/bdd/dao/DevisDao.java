@@ -177,17 +177,29 @@ public class DevisDao {
 		return lstModule;
 	}
 	
-	private static List<Composant> getComposantByRefDevis(String reference, Connection con){
+	private static List<Composant> getComposantByRefDevis(String reference, Connection con) throws Exception {
 		List<Composant> lstComposant = new ArrayList<>();
-		String sql = "SELECT composant.reference_composant as idComposant, nom_composant as nomComposant,
-prixht_composant as prixHTComposant,
-commentaire_composant as commentaireComposant,
-stock_composant as stockComposant 
- FROM composant
-LEFT JOIN composant_module ON composant_module.reference_composant = composant.reference_composant
-LEFT JOIN module ON module.reference_module = composant_module.reference_module
-LEFT JOIN devis_module_choix ON devis_module_choix.reference_module = module.reference_module
-WHERE devis_module_choix.id_devis = '3546L5445' AND composant.suppression_composant = 0"
-		return new ArrayList<>();
+		Composant composant = null;
+		String sql = "SELECT composant.reference_composant as idComposant, nom_composant as nomComposant, "
+				+ "prixht_composant as prixHTComposant, commentaire_composant as commentaireComposant, "
+				+ "stock_composant as stockComposant FROM composant "
+				+ "LEFT JOIN composant_module ON composant_module.reference_composant = composant.reference_composant "
+				+ "LEFT JOIN module ON module.reference_module = composant_module.reference_module "
+				+ "LEFT JOIN devis_module_choix ON devis_module_choix.reference_module = module.reference_module "
+				+ "WHERE devis_module_choix.id_devis = ? AND composant.suppression_composant = 0";
+		PreparedStatement stmt = con.prepareStatement(sql);
+		stmt.setString(1, reference);
+		ResultSet res = stmt.executeQuery();
+		while(res.next()){
+			composant = new Composant();
+			composant.setIdReference(res.getString("idComposant"));
+			composant.setNom(res.getString("nomComposant"));
+			composant.setCommentaire(res.getString("commentaireComposant"));
+			composant.setPrixHT(res.getFloat("prixHTComposant"));
+			composant.setStock(res.getFloat("stockComposant"));
+			lstComposant.add(composant);
+		}
+		stmt.close();
+		return lstComposant;
 	}
 }

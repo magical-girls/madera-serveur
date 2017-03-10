@@ -8,8 +8,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.magicalg.madera.entity.Devis;
 import com.magicalg.madera.helper.CheckTokenHelper;
 
 /**
@@ -30,16 +28,10 @@ public class ClientServlet extends HttpServlet {
 				response.sendError(401, "Erreur token invalide");
 			} else {
 				if(null == request.getParameter("id")){
-					ObjectMapper mapper = new ObjectMapper();
-					Devis devis = new Devis();
-					devis.setReference("22fghf565");
-					String ret = mapper.writeValueAsString(devis);
-					response.getWriter().append(ret).append(" / con ok").append(request.getSession().getId());
-						
-				
-					} else {
-						response.getWriter().append(request.getParameter("id"));
-					}
+					response.getWriter().append("En cours de construction");
+				} else {
+					response.getWriter().append("En cours de construction");
+				}
 			}
 		} catch (Exception e1) {
 			response.sendError(401, e1.getMessage());
