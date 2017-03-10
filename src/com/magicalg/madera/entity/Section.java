@@ -4,7 +4,6 @@ public class Section {
 
 	private Integer id;
 	private Float longueur;
-	private Integer idDevisMod;
 
 	public Section() {
 	}
@@ -13,7 +12,6 @@ public class Section {
 		super();
 		this.id = id;
 		this.longueur = longueur;
-		this.idDevisMod = idDevisMod;
 	}
 
 	public Integer getId() {
@@ -32,17 +30,11 @@ public class Section {
 		this.longueur = longueur;
 	}
 
-	public Integer getIdDevisMod() {
-		return idDevisMod;
-	}
 
-	public void setIdDevisMod(Integer idDevisMod) {
-		this.idDevisMod = idDevisMod;
-	}
 
 	@Override
 	public String toString() {
-		return "Section [id=" + id + ", longueur=" + longueur + ", idDevisMod=" + idDevisMod + "]";
+		return "Section [id=" + id + ", longueur=" + longueur + "]";
 	}
 
 }

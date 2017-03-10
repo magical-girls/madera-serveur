@@ -34,7 +34,7 @@ public class ClientServlet extends HttpServlet {
 					Devis devis = new Devis();
 					devis.setReference("22fghf565");
 					String ret = mapper.writeValueAsString(devis);
-						response.getWriter().append(ret).append(" / con ok").append(request.getSession().getId());
+					response.getWriter().append(ret).append(" / con ok").append(request.getSession().getId());
 						
 				
 					} else {

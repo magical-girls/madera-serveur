@@ -35,7 +35,6 @@ public class LoginServlet extends HttpServlet {
 						+ AEScrypt.encrypt(login.getMdp()) + "."
 						+ AEScrypt.encrypt(login.getMatriculeSalarie()) + "."
 						+ request.getSession().getId();
-				ObjectMapper mapper = new ObjectMapper();
 				response.setHeader("token", token);
 				response.getWriter().append("Ok");
 			} else {

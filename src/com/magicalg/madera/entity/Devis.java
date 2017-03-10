@@ -1,41 +1,22 @@
 package com.magicalg.madera.entity;
 
-import java.sql.Timestamp;
-
 public class Devis {
 
 	private String reference;
 	private String motif;
-	private Integer status;
-	private Timestamp dateCreation;
-	private Timestamp dateFin;
+	private String status;
+	private String dateCreation;
+	private String dateFin;
 	private Integer tempsContruction;
 	private Float prixTTC;
 	private Float prixHT;
-	private Salarie salarie;
-	private Integer idClient;
-	private String refGamme;
-	private String refMmodulaire;
+	private Float margeCom;
+	private Float margeEnt;
 
-	public Devis() {}
-	
-	public Devis(String reference, String motif, Integer status, Timestamp dateCreation, Timestamp dateFin,
-			Integer tempsContruction, Float prixTTC, Float prixHT, Salarie salarie, Integer idClient, String refGamme,
-			String refMmodulaire) {
-		super();
-		this.reference = reference;
-		this.motif = motif;
-		this.status = status;
-		this.dateCreation = dateCreation;
-		this.dateFin = dateFin;
-		this.tempsContruction = tempsContruction;
-		this.prixTTC = prixTTC;
-		this.prixHT = prixHT;
-		this.salarie = salarie;
-		this.idClient = idClient;
-		this.refGamme = refGamme;
-		this.refMmodulaire = refMmodulaire;
-	}
+	public static final String _REFUSE = "Refusé";
+	public static final String _ENCOURS = "En cours";
+	public static final String _ENATTENTE = "En attente";
+	public static final String _VALIDE = "Validé";
 
 	public String getReference() {
 		return reference;
@@ -53,27 +34,39 @@ public class Devis {
 		this.motif = motif;
 	}
 
-	public Integer getStatus() {
+	public String getStatus() {
 		return status;
 	}
 
 	public void setStatus(Integer status) {
-		this.status = status;
+		if (null != status) {
+			if (-1 == status) {
+				this.status = _REFUSE;
+			} else if (1 == status) {
+				this.status = _ENATTENTE;
+			} else if (2 == status) {
+				this.status = _VALIDE;
+			} else {
+				this.status = _ENCOURS;
+			}
+		} else {
+			this.status = _ENCOURS;
+		}
 	}
 
-	public Timestamp getDateCreation() {
+	public String getDateCreation() {
 		return dateCreation;
 	}
 
-	public void setDateCreation(Timestamp dateCreation) {
+	public void setDateCreation(String dateCreation) {
 		this.dateCreation = dateCreation;
 	}
 
-	public Timestamp getDateFin() {
+	public String getDateFin() {
 		return dateFin;
 	}
 
-	public void setDateFin(Timestamp dateFin) {
+	public void setDateFin(String dateFin) {
 		this.dateFin = dateFin;
 	}
 
@@ -101,44 +94,31 @@ public class Devis {
 		this.prixHT = prixHT;
 	}
 
-	public Salarie getSalarie() {
-		return salarie;
+	public Float getMargeCom() {
+		return margeCom;
 	}
 
-	public void setSalarie(Salarie salarie) {
-		this.salarie = salarie;
+	public void setMargeCom(Float margeCom) {
+		this.margeCom = margeCom;
 	}
 
-	public Integer getIdClient() {
-		return idClient;
+	public Float getMargeEnt() {
+		return margeEnt;
 	}
 
-	public void setIdClient(Integer idClient) {
-		this.idClient = idClient;
+	public void setMargeEnt(Float margeEnt) {
+		this.margeEnt = margeEnt;
 	}
 
-	public String getRefGamme() {
-		return refGamme;
-	}
-
-	public void setRefGamme(String refGamme) {
-		this.refGamme = refGamme;
-	}
-
-	public String getRefMmodulaire() {
-		return refMmodulaire;
-	}
-
-	public void setRefMmodulaire(String refMmodulaire) {
-		this.refMmodulaire = refMmodulaire;
-	}
+	
 
 	@Override
 	public String toString() {
 		return "Devis [reference=" + reference + ", motif=" + motif + ", status=" + status + ", dateCreation="
 				+ dateCreation + ", dateFin=" + dateFin + ", tempsContruction=" + tempsContruction + ", prixTTC="
-				+ prixTTC + ", prixHT=" + prixHT + ", salarie=" + salarie + ", idClient=" + idClient + ", refGamme="
-				+ refGamme + ", refMmodulaire=" + refMmodulaire + "]";
+				+ prixTTC + ", prixHT=" + prixHT + ", margeCom=" + margeCom + ", margeEnt=" + margeEnt + "]";
 	}
+
+
 
 }

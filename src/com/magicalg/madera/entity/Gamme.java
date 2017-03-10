@@ -6,6 +6,8 @@ public class Gamme {
 	private String nom;
 	private String commentaire;
 	private Integer suppression;
+	
+	public Gamme() {}
 
 	public String getIdReferenceGamme() {
 		return idReferenceGamme;

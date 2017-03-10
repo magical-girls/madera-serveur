@@ -4,7 +4,6 @@ public class Module {
 
 	private String idReference;
 	private String commentaire;
-	private Integer suppression;
 
 	public Module() {
 	}
@@ -13,7 +12,6 @@ public class Module {
 		super();
 		this.idReference = idReference;
 		this.commentaire = commentaire;
-		this.suppression = suppression;
 	}
 
 	public String getIdReference() {
@@ -32,18 +30,11 @@ public class Module {
 		this.commentaire = commentaire;
 	}
 
-	public Integer getSuppression() {
-		return suppression;
-	}
-
-	public void setSuppression(Integer suppression) {
-		this.suppression = suppression;
-	}
+	
 
 	@Override
 	public String toString() {
-		return "Module [idReference=" + idReference + ", commentaire=" + commentaire + ", suppression=" + suppression
-				+ "]";
+		return "Module [idReference=" + idReference + ", commentaire=" + commentaire +"]";
 	}
 
 }
