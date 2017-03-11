@@ -59,14 +59,16 @@ public class ClientDao {
 	}
 	
 	public static void updateCient(Client client) throws Exception{
-		String sql = "UPDATE TABLE client SET nom_client = ?, prenom_client = ?, naissance_client = ?, "
-				+ "tel_client = ?, adresse_client = ?, profession_client = ?, mail_client = ?, "
+		String sql = "UPDATE client SET nom_client = ?, prenom_client = ?, naissance_client = ?, "
+				+ "tel_client = ?, adresse_client = ?, profession_client = ?, mail_client = ? "
 				+ "WHERE id_client = ?";
 		Connection con = ConnectionBdd.connect();
 		PreparedStatement stmt = con.prepareStatement(sql);
 		stmt.setString(1, client.getNom());
 		stmt.setString(2, client.getPrenom());
-		stmt.setDate(3, (Date) sdf.parse(client.getNaissance()));
+		java.util.Date date = sdf.parse(client.getNaissance());
+		java.sql.Date dateSql = new Date(date.getTime());
+		stmt.setDate(3, dateSql);
 		stmt.setString(4, client.getTel());
 		stmt.setString(5, client.getAdresse());
 		stmt.setString(6, client.getProfession());

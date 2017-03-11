@@ -11,6 +11,9 @@ public class Client {
 	private String profession;
 	private String mail;
 	private String creation;
+	
+	public Client() {
+	}
 
 	public Client(Integer id, String nom, String prenom, String naissance, String tel, String adresse,
 			String profession, String mail, String creation) {

@@ -1,6 +1,7 @@
 package com.magicalg.madera.servlet;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -13,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.magicalg.madera.bdd.dao.ClientDao;
 import com.magicalg.madera.entity.Client;
 import com.magicalg.madera.helper.CheckTokenHelper;
+import com.magicalg.madera.helper.RequestJsonHelper;
 
 /**
  * Servlet implementation class ClientServlet
@@ -54,11 +56,25 @@ public class ClientServlet extends HttpServlet {
 	}
 	
 	@Override
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try {
+			if(!CheckTokenHelper.checkToken(request.getHeader("token"), request.getSession())){
+				response.sendError(401, "Erreur token invalide");
+			} else {
+				
+				String data = RequestJsonHelper.getJsonFromRequest(request);
+				ObjectMapper mapper = new ObjectMapper();
+				Client client = mapper.readValue(new StringReader(data), Client.class);
+				ClientDao.updateCient(client);
+				response.getWriter().append("Ok");
+			}
+		} catch (Exception e1) {
+			response.sendError(500, e1.getMessage());
+		}
 	}
 	
 	@Override
-	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	}
 	
 	
