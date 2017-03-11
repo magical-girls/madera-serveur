@@ -1,7 +1,6 @@
 package com.magicalg.madera.servlet;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,15 +9,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.magicalg.madera.bdd.dao.ClientDao;
-import com.magicalg.madera.entity.Client;
+import com.magicalg.madera.bdd.dao.SalarieDao;
+import com.magicalg.madera.entity.Salarie;
 import com.magicalg.madera.helper.CheckTokenHelper;
 
 /**
- * Servlet implementation class ClientServlet
+ * Servlet implementation class UserServlet
  */
-@WebServlet("/client")
-public class ClientServlet extends HttpServlet {
+@WebServlet("/user")
+public class UserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 
@@ -31,35 +30,24 @@ public class ClientServlet extends HttpServlet {
 			if(!CheckTokenHelper.checkToken(request.getHeader("token"), request.getSession())){
 				response.sendError(401, "Erreur token invalide");
 			} else {
-				if(null == request.getParameter("id")){
-					List<Client> lst = ClientDao.getAllClient();
+				if(null != request.getParameter("id")){
+					Salarie user = SalarieDao.getSalarie(request.getParameter("id"));
 					ObjectMapper mapper = new ObjectMapper();
-					response.getWriter().append(mapper.writeValueAsString(lst));
+					response.getWriter().append(mapper.writeValueAsString(user));
 				} else {
-					ObjectMapper mapper = new ObjectMapper();
-					Client client = ClientDao.getClientById(Integer.valueOf(request.getParameter("id")));
-					response.getWriter().append(mapper.writeValueAsString(client));
+					response.sendError(500, "Pas de liste User possible");
 				}
 			}
 		} catch (Exception e1) {
-			response.sendError(500, e1.getMessage());
+			response.sendError(401, e1.getMessage());
 		}
-		
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.getWriter().append("POST En cours de construction");
 	}
-	
-	@Override
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-	}
-	
-	@Override
-	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-	}
-	
-	
+
 }

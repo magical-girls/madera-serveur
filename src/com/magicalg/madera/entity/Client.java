@@ -1,7 +1,5 @@
 package com.magicalg.madera.entity;
 
-import java.sql.Timestamp;
-
 public class Client {
 
 	private Integer id;
@@ -12,10 +10,10 @@ public class Client {
 	private String adresse;
 	private String profession;
 	private String mail;
-	private Timestamp creation;
+	private String creation;
 
 	public Client(Integer id, String nom, String prenom, String naissance, String tel, String adresse,
-			String profession, String mail) {
+			String profession, String mail, String creation) {
 		super();
 		this.id = id;
 		this.nom = nom;
@@ -25,6 +23,7 @@ public class Client {
 		this.adresse = adresse;
 		this.profession = profession;
 		this.mail = mail;
+		this.creation = creation;
 	}
 
 	public Integer getId() {
@@ -91,11 +90,11 @@ public class Client {
 		this.mail = mail;
 	}
 
-	public Timestamp getCreation() {
+	public String getCreation() {
 		return creation;
 	}
 
-	public void setCreation(Timestamp creation) {
+	public void setCreation(String creation) {
 		this.creation = creation;
 	}
 	

@@ -85,7 +85,7 @@ public class DevisDao {
 		ResultSet res = stmt.executeQuery();
 		while(res.next()){
 			Client client = new Client(res.getInt("idClient"), res.getString("nomClient"), res.getString("prenomClient"), null, res.getString("telClient"),
-					null, null, res.getString("mailClient"));
+					null, null, res.getString("mailClient"), null);
 			devis.setClient(client);
 			Devis dev = new Devis();
 			dev.setReference(res.getString("referenceDevis"));
