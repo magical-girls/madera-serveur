@@ -2,19 +2,18 @@ package com.magicalg.madera.entity;
 
 public class Gamme {
 
-	private String idReferenceGamme;
+	private String idReference;
 	private String nom;
 	private String commentaire;
-	private Integer suppression;
 	
 	public Gamme() {}
 
-	public String getIdReferenceGamme() {
-		return idReferenceGamme;
+	public String getIdReference() {
+		return idReference;
 	}
 
-	public void setIdReferenceGamme(String idReferenceGamme) {
-		this.idReferenceGamme = idReferenceGamme;
+	public void setIdReference(String idReference) {
+		this.idReference = idReference;
 	}
 
 	public String getNom() {
@@ -33,26 +32,16 @@ public class Gamme {
 		this.commentaire = commentaire;
 	}
 
-	public Integer getSuppression() {
-		return suppression;
-	}
-
-	public void setSuppression(Integer suppression) {
-		this.suppression = suppression;
-	}
-
-	public Gamme(String idReferenceGamme, String nom, String commentaire, Integer suppression) {
+	public Gamme(String idReference, String nom, String commentaire) {
 		super();
-		this.idReferenceGamme = idReferenceGamme;
+		this.idReference = idReference;
 		this.nom = nom;
 		this.commentaire = commentaire;
-		this.suppression = suppression;
 	}
 
 	@Override
 	public String toString() {
-		return "Gamme [idReferenceGamme=" + idReferenceGamme + ", nom=" + nom + ", commentaire=" + commentaire
-				+ ", suppression=" + suppression + "]";
+		return "Gamme [idReference=" + idReference + ", nom=" + nom + ", commentaire=" + commentaire + "]";
 	}
 
 }

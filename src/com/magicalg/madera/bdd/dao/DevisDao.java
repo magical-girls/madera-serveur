@@ -97,7 +97,7 @@ public class DevisDao {
 					res.getString("prenomCommercial"), res.getString("mailCommercial"), res.getString("telCommercial"));
 			devis.setSalarie(salarie);
 			Gamme gamme = new Gamme();
-			gamme.setIdReferenceGamme(res.getString("referenceGamme"));
+			gamme.setIdReference(res.getString("referenceGamme"));
 			gamme.setNom(res.getString("nomGamme"));
 			gamme.setCommentaire(res.getString("commentaireGamme"));
 			devis.setGamme(gamme);
@@ -201,5 +201,16 @@ public class DevisDao {
 		}
 		stmt.close();
 		return lstComposant;
+	}
+
+	public static void deleteDevis(String reference) throws Exception {
+		String sql = "UPDATE devis SET suppression_devis = 1 "
+				+ "WHERE reference_devis = ?";
+		Connection con = ConnectionBdd.connect();
+		PreparedStatement stmt = con.prepareStatement(sql);
+		stmt.setString(1, reference);
+		stmt.executeUpdate();
+		stmt.close();
+		con.close();
 	}
 }

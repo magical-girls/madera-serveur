@@ -10,50 +10,54 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONObject;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.magicalg.madera.bdd.dao.ClientDao;
-import com.magicalg.madera.entity.Client;
+import com.magicalg.madera.bdd.dao.GammeDao;
+import com.magicalg.madera.entity.Gamme;
 import com.magicalg.madera.helper.CheckTokenHelper;
 import com.magicalg.madera.helper.RequestJsonHelper;
 
 /**
- * Servlet implementation class ClientServlet
+ * Servlet implementation class GammeServlet
  */
-@WebServlet("/client")
-public class ClientServlet extends HttpServlet {
+@WebServlet("/gamme")
+public class GammeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
 		try {
 			response.setContentType("application/json; charset=UTF-8");
 			if(!CheckTokenHelper.checkToken(request.getHeader("token"), request.getSession())){
 				response.sendError(401, "Erreur token invalide");
 			} else {
-				if(null == request.getParameter("id")){
-					List<Client> lst = ClientDao.getAllClient();
+				if(null != request.getParameter("id")){
 					ObjectMapper mapper = new ObjectMapper();
-					response.getWriter().append(mapper.writeValueAsString(lst));
-				} else {
+					Gamme gamme = GammeDao.getGammeById(request.getParameter("id"));
+					response.getWriter().append(mapper.writeValueAsString(gamme));
+				}else {
 					ObjectMapper mapper = new ObjectMapper();
-					Client client = ClientDao.getClientById(Integer.valueOf(request.getParameter("id")));
-					response.getWriter().append(mapper.writeValueAsString(client));
+					List<Gamme> lstGamme = GammeDao.getAllGamme();
+					response.getWriter().append(mapper.writeValueAsString(lstGamme));
 				}
 			}
 		} catch (Exception e1) {
 			response.sendError(500, e1.getMessage());
 		}
-		
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("application/json; charset=UTF-8");
+		response.getWriter().append("POST gamme en cours de construction");
 	}
 	
 	@Override
@@ -63,18 +67,33 @@ public class ClientServlet extends HttpServlet {
 			if(!CheckTokenHelper.checkToken(request.getHeader("token"), request.getSession())){
 				response.sendError(401, "Erreur token invalide");
 			} else {
-				
-				String data = RequestJsonHelper.getJsonFromRequest(request);
+				String json = RequestJsonHelper.getJsonFromRequest(request);
 				ObjectMapper mapper = new ObjectMapper();
-				Client client = mapper.readValue(new StringReader(data), Client.class);
-				ClientDao.updateCient(client);
+				Gamme gamme = mapper.readValue(new StringReader(json), Gamme.class);
+				GammeDao.updateGamme(gamme);
 				response.getWriter().append("Ok");
 			}
-		} catch (Exception e1) {
-			response.sendError(500, e1.getMessage());
+		} catch (Exception e) {
+			response.sendError(500, e.getMessage());
 		}
 	}
 	
-	
-	
+	@Override
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try {
+			response.setContentType("application/json; charset=UTF-8");
+			if(!CheckTokenHelper.checkToken(request.getHeader("token"), request.getSession())){
+				response.sendError(401, "Erreur token invalide");
+			} else {
+				String json = RequestJsonHelper.getJsonFromRequest(request);
+				JSONObject objJson = new JSONObject(json);
+				String reference = objJson.getString("idReference");
+				GammeDao.deleteGamme(reference);
+				response.getWriter().append("Ok : " + reference);
+			}
+		} catch (Exception e) {
+			response.sendError(500, e.getMessage());
+		}
+	}
+
 }

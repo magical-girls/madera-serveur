@@ -24,6 +24,7 @@ public class LoginServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("application/json; charset=UTF-8");
 		String name = request.getParameter("name");
 		String pwd = request.getParameter("pwd");
 		Login login = null;

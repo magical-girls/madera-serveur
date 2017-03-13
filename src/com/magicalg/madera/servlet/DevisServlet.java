@@ -10,10 +10,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.magicalg.madera.bdd.dao.DevisDao;
 import com.magicalg.madera.helper.CheckTokenHelper;
+import com.magicalg.madera.helper.RequestJsonHelper;
 import com.magicalg.madera.model.DevisId;
 import com.magicalg.madera.model.ListDevis;
 
@@ -32,6 +34,7 @@ public class DevisServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
+			response.setContentType("application/json; charset=UTF-8");
 			if (!CheckTokenHelper.checkToken(request.getHeader("token"), request.getSession())) {
 				response.sendError(401, "Erreur token invalide");
 			} else {
@@ -60,12 +63,32 @@ public class DevisServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		response.setContentType("application/json; charset=UTF-8");
 		response.getWriter().append("POST En cours de construction");
 	}
 	
 	@Override
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.getWriter().append("PUT En cours de construction");
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("application/json; charset=UTF-8");
+		response.getWriter().append("PUT En cours de construction");
+	}
+	
+	@Override
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try {
+			response.setContentType("application/json; charset=UTF-8");
+			if (!CheckTokenHelper.checkToken(request.getHeader("token"), request.getSession())) {
+				response.sendError(401, "Erreur token invalide");
+			} else {
+				String json = RequestJsonHelper.getJsonFromRequest(request);
+				JSONObject objJson = new JSONObject(json);
+				String reference = objJson.getString("reference");
+				DevisDao.deleteDevis(reference);
+				response.getWriter().append("ok");
+			}
+		} catch (Exception e1) {
+			response.sendError(500, e1.getMessage());
+		}
 	}
 
 }
