@@ -8,7 +8,7 @@ public class Module {
 	public Module() {
 	}
 
-	public Module(String idReference, String commentaire, Integer suppression) {
+	public Module(String idReference, String commentaire) {
 		super();
 		this.idReference = idReference;
 		this.commentaire = commentaire;

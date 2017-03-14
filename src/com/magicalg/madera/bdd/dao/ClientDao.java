@@ -79,4 +79,22 @@ public class ClientDao {
 		con.close();
 	}
 
+	public static void addCient(Client client) throws Exception{
+		String sql = "INSERT INTO client (nom_client, prenom_client, naissance_client, tel_client, "
+				+ "adresse_client, profession_client, mail_client) VALUES (?,?,?,?,?,?,?)";
+		Connection con = ConnectionBdd.connect();
+		PreparedStatement stmt = con.prepareStatement(sql);
+		stmt.setString(1, client.getNom());
+		stmt.setString(2, client.getPrenom());
+		java.util.Date date = sdf.parse(client.getNaissance());
+		java.sql.Date dateSql = new Date(date.getTime());
+		stmt.setDate(3, dateSql);
+		stmt.setString(4, client.getTel());
+		stmt.setString(5, client.getAdresse());
+		stmt.setString(6, client.getProfession());
+		stmt.setString(7, client.getMail());
+		stmt.executeUpdate();
+		stmt.close();
+		con.close();
+	}
 }

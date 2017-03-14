@@ -56,8 +56,20 @@ public class GammeServlet extends HttpServlet {
 	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("application/json; charset=UTF-8");
-		response.getWriter().append("POST gamme en cours de construction");
+		try {
+			response.setContentType("application/json; charset=UTF-8");
+			if(!CheckTokenHelper.checkToken(request.getHeader("token"), request.getSession())){
+				response.sendError(401, "Erreur token invalide");
+			} else {
+				String json = RequestJsonHelper.getJsonFromRequest(request);
+				ObjectMapper mapper = new ObjectMapper();
+				Gamme gamme = mapper.readValue(new StringReader(json), Gamme.class);
+				GammeDao.addGamme(gamme);
+				response.getWriter().append("Ok");
+			}
+		} catch (Exception e1) {
+			response.sendError(500, e1.getMessage());
+		}
 	}
 	
 	@Override

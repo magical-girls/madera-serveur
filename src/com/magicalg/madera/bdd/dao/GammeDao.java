@@ -59,6 +59,18 @@ public class GammeDao {
 		stmt.close();
 		con.close();
 	}
+	
+	public static void addGamme(Gamme gamme) throws Exception {
+		String sql = "INSERT INTO gamme (reference_gamme, nom_gamme, commentaire_gamme) VALUES (?,?,?)";
+		Connection con = ConnectionBdd.connect();
+		PreparedStatement stmt = con.prepareStatement(sql);
+		stmt.setString(1, gamme.getIdReference());
+		stmt.setString(2, gamme.getNom());
+		stmt.setString(3, gamme.getCommentaire());
+		stmt.executeUpdate();
+		stmt.close();
+		con.close();
+	}
 
 	public static void deleteGamme(String reference) throws Exception {
 		String sql = "UPDATE gamme SET suppression_gamme = 1 WHERE reference_gamme = ?";

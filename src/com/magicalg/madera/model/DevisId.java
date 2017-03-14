@@ -1,6 +1,5 @@
 package com.magicalg.madera.model;
 
-import java.sql.Connection;
 import java.util.List;
 
 import com.magicalg.madera.entity.Angle;
