@@ -4,11 +4,11 @@ import java.util.List;
 
 import com.magicalg.madera.entity.Module;
 
-public class LstModule extends Module{
+public class ModuleWithGamme extends Module{
 
 	private List<String> idGamme;
 	
-	public LstModule() {
+	public ModuleWithGamme() {
 		super();
 	}
 
@@ -19,5 +19,12 @@ public class LstModule extends Module{
 	public void setIdGamme(List<String> list) {
 		this.idGamme = list;
 	}
+
+	@Override
+	public String toString() {
+		return "ModuleWithGamme [idGamme=" + idGamme + ", toString()=" + super.toString() + "]";
+	}
+	
+	
 
 }
