@@ -57,7 +57,7 @@ public class GammeServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			response.setContentType("application/json; charset=UTF-8");
+			response.setContentType("charset=UTF-8");
 			if(!CheckTokenHelper.checkToken(request.getHeader("token"), request.getSession())){
 				response.sendError(401, "Erreur token invalide");
 			} else {
@@ -75,7 +75,7 @@ public class GammeServlet extends HttpServlet {
 	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			response.setContentType("application/json; charset=UTF-8");
+			response.setContentType("charset=UTF-8");
 			if(!CheckTokenHelper.checkToken(request.getHeader("token"), request.getSession())){
 				response.sendError(401, "Erreur token invalide");
 			} else {
@@ -93,7 +93,7 @@ public class GammeServlet extends HttpServlet {
 	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			response.setContentType("application/json; charset=UTF-8");
+			response.setContentType("charset=UTF-8");
 			if(!CheckTokenHelper.checkToken(request.getHeader("token"), request.getSession())){
 				response.sendError(401, "Erreur token invalide");
 			} else {

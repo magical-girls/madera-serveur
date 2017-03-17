@@ -47,6 +47,9 @@ public class Salarie {
 	public void setTel(String tel) {
 		this.tel = tel;
 	}
+	
+	public Salarie() {
+	}
 
 	public Salarie(String idMatricule, String nom, String prenom, String mail, String tel) {
 		super();

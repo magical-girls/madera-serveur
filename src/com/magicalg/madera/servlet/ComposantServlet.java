@@ -1,7 +1,6 @@
 package com.magicalg.madera.servlet;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -11,38 +10,37 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.magicalg.madera.bdd.dao.ClientDao;
-import com.magicalg.madera.entity.Client;
+import com.magicalg.madera.bdd.dao.ComposantDao;
 import com.magicalg.madera.helper.CheckTokenHelper;
-import com.magicalg.madera.helper.RequestJsonHelper;
+import com.magicalg.madera.model.ComposantWithModule;
 
 /**
- * Servlet implementation class ClientServlet
+ * Servlet implementation class ComposantServlet
  */
-@WebServlet("/client")
-public class ClientServlet extends HttpServlet {
+@WebServlet("/composant")
+public class ComposantServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
+    
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
 		try {
 			response.setContentType("application/json; charset=UTF-8");
 			if(!CheckTokenHelper.checkToken(request.getHeader("token"), request.getSession())){
 				response.sendError(401, "Erreur token invalide");
 			} else {
 				if(null == request.getParameter("id")){
-					List<Client> lst = ClientDao.getAllClient();
 					ObjectMapper mapper = new ObjectMapper();
-					response.getWriter().append(mapper.writeValueAsString(lst));
+					List<ComposantWithModule> composant = ComposantDao.getAllComposant();
+					response.getWriter().append(mapper.writeValueAsString(composant));
 				} else {
 					ObjectMapper mapper = new ObjectMapper();
-					Client client = ClientDao.getClientById(Integer.valueOf(request.getParameter("id")));
-					response.getWriter().append(mapper.writeValueAsString(client));
+					ComposantWithModule composant = ComposantDao.getComposantByIdRef(request.getParameter("id"));
+					response.getWriter().append(mapper.writeValueAsString(composant));
 				}
 			}
 		} catch (Exception e1) {
@@ -57,26 +55,5 @@ public class ClientServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	}
-	
-	@Override
-	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		try {
-			response.setContentType("charset=UTF-8");
-			if(!CheckTokenHelper.checkToken(request.getHeader("token"), request.getSession())){
-				response.sendError(401, "Erreur token invalide");
-			} else {
-				
-				String data = RequestJsonHelper.getJsonFromRequest(request);
-				ObjectMapper mapper = new ObjectMapper();
-				Client client = mapper.readValue(new StringReader(data), Client.class);
-				ClientDao.updateCient(client);
-				response.getWriter().append("Ok");
-			}
-		} catch (Exception e1) {
-			response.sendError(500, e1.getMessage());
-		}
-	}
-	
-	
-	
+
 }

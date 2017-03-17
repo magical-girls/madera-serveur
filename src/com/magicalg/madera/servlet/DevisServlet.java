@@ -63,20 +63,20 @@ public class DevisServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		response.setContentType("application/json; charset=UTF-8");
+		response.setContentType("charset=UTF-8");
 		response.getWriter().append("POST En cours de construction");
 	}
 	
 	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("application/json; charset=UTF-8");
+		response.setContentType("charset=UTF-8");
 		response.getWriter().append("PUT En cours de construction");
 	}
 	
 	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			response.setContentType("application/json; charset=UTF-8");
+			response.setContentType("charset=UTF-8");
 			if (!CheckTokenHelper.checkToken(request.getHeader("token"), request.getSession())) {
 				response.sendError(401, "Erreur token invalide");
 			} else {

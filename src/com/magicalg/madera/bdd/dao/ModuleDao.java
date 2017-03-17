@@ -23,7 +23,7 @@ public class ModuleDao {
 		while(res.next()){
 			modules = new ModuleWithGamme();
 			modules.setIdReference(res.getString("idReference"));
-			modules.setCommentaire("commentaire");
+			modules.setCommentaire(res.getString("commentaire"));
 			modules.setIdGamme(getListIdGamme(res.getString("idReference"), con));
 			moduleWithGamme.add(modules);
 		}
