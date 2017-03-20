@@ -15,9 +15,9 @@ import com.magicalg.madera.entity.Devis;
 import com.magicalg.madera.entity.Gamme;
 import com.magicalg.madera.entity.Module;
 import com.magicalg.madera.entity.Salarie;
-import com.magicalg.madera.entity.Section;
 import com.magicalg.madera.model.DevisId;
 import com.magicalg.madera.model.ListDevis;
+import com.magicalg.madera.model.SectionWithRefModule;
 
 public class DevisDao {
 	
@@ -138,10 +138,11 @@ public class DevisDao {
 		
 	}
 	
-	private static List<Section> getSectionByRefDevis(String reference, Connection con) throws Exception{
-		List<Section> lstSection = new ArrayList<>();
-		Section section = null;
-		String sql = "select id_section as idSection, longueur_section as longueurSection from section "
+	private static List<SectionWithRefModule> getSectionByRefDevis(String reference, Connection con) throws Exception{
+		List<SectionWithRefModule> lstSection = new ArrayList<>();
+		SectionWithRefModule section = null;
+		String sql = "select id_section as idSection, longueur_section as longueurSection, "
+				+ "devis_module_choix.reference_module as idModule from section "
 			+ "left join devis_module_choix on devis_module_choix.id_devismod = section.id_devis_mod "
 			+ "left join devis on  devis_module_choix.id_devis = devis.reference_devis "
 			+ "where devis.reference_devis = ?";
@@ -149,9 +150,10 @@ public class DevisDao {
 		stmt.setString(1, reference);
 		ResultSet res = stmt.executeQuery();
 		while(res.next()){
-			section = new Section();
+			section = new SectionWithRefModule();
 			section.setId(res.getInt("idSection"));
 			section.setLongueur(res.getFloat("longueurSection"));
+			section.setRefModule(res.getString("idModule"));
 			lstSection.add(section);
 		}
 		stmt.close();

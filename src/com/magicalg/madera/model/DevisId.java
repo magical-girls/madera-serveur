@@ -9,7 +9,6 @@ import com.magicalg.madera.entity.Devis;
 import com.magicalg.madera.entity.Gamme;
 import com.magicalg.madera.entity.Module;
 import com.magicalg.madera.entity.Salarie;
-import com.magicalg.madera.entity.Section;
 
 public class DevisId {
 
@@ -18,7 +17,7 @@ public class DevisId {
 	private Devis devis;
 	private Gamme gamme;
 	private List<Angle> lstAngle;
-	private List<Section> lstSection;
+	private List<SectionWithRefModule> lstSection;
 	private List<Module> lstModule;
 	private List<Composant> lstComposant;
 
@@ -62,11 +61,11 @@ public class DevisId {
 		this.lstAngle = lstAngle;
 	}
 
-	public List<Section> getLstSection() {
+	public List<SectionWithRefModule> getLstSection() {
 		return lstSection;
 	}
 
-	public void setLstSection(List<Section> lstSection) {
+	public void setLstSection(List<SectionWithRefModule> lstSection) {
 		this.lstSection = lstSection;
 	}
 
