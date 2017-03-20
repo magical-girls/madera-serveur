@@ -112,6 +112,20 @@ public class DevisDao {
 		return devis;
 	}
 	
+	public static void deleteDevis(String reference) throws Exception {
+		String sql = "UPDATE devis SET suppression_devis = 1 "
+				+ "WHERE reference_devis = ?";
+		Connection con = ConnectionBdd.connect();
+		PreparedStatement stmt = con.prepareStatement(sql);
+		stmt.setString(1, reference);
+		stmt.executeUpdate();
+		stmt.close();
+		con.close();
+	}
+	
+	public static boolean addDevis(DevisId devis){
+		return false;
+	}
 	
 	private static List<Angle> getAngleByRefDevis(String reference, Connection con) throws Exception{
 		
@@ -205,14 +219,5 @@ public class DevisDao {
 		return lstComposant;
 	}
 
-	public static void deleteDevis(String reference) throws Exception {
-		String sql = "UPDATE devis SET suppression_devis = 1 "
-				+ "WHERE reference_devis = ?";
-		Connection con = ConnectionBdd.connect();
-		PreparedStatement stmt = con.prepareStatement(sql);
-		stmt.setString(1, reference);
-		stmt.executeUpdate();
-		stmt.close();
-		con.close();
-	}
+	
 }

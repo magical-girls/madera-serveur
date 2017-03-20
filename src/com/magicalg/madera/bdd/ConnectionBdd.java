@@ -13,9 +13,9 @@ public class ConnectionBdd {
 		String port = "3306";
 		String userName = "root";
 		/* Localhost */
-		//String pwd = "";
+		String pwd = "";
 		/* sur le site */
-		String pwd = "MagicalGirl";
+		//String pwd = "MagicalGirl";
 		String dbName = "madera-bdd";
 		String urlPort = url + ":" + port + "/" + dbName;
 		Class.forName("com.mysql.jdbc.Driver");
