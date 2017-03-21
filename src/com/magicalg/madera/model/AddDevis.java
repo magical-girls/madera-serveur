@@ -3,7 +3,6 @@ package com.magicalg.madera.model;
 import java.util.List;
 
 import com.magicalg.madera.entity.Angle;
-import com.magicalg.madera.entity.Composant;
 import com.magicalg.madera.entity.Module;
 
 public class AddDevis {
@@ -15,7 +14,6 @@ public class AddDevis {
 	private String adresseClient;
 	private String professionClient;
 	private String mailClient;
-	private String creationClient;
 	private String idMatriculeSalarie;
 	private String referenceDevis;
 	private String motifDevis;
@@ -25,7 +23,6 @@ public class AddDevis {
 	private List<Angle> lstAngle;
 	private List<SectionWithRefModule> lstSection;
 	private List<Module> lstModule;
-	private List<Composant> lstComposant;
 
 	public String getNomClient() {
 		return nomClient;
@@ -81,14 +78,6 @@ public class AddDevis {
 
 	public void setMailClient(String mailClient) {
 		this.mailClient = mailClient;
-	}
-
-	public String getCreationClient() {
-		return creationClient;
-	}
-
-	public void setCreationClient(String creationClient) {
-		this.creationClient = creationClient;
 	}
 
 	public String getIdMatriculeSalarie() {
@@ -163,23 +152,16 @@ public class AddDevis {
 		this.lstModule = lstModule;
 	}
 
-	public List<Composant> getLstComposant() {
-		return lstComposant;
-	}
-
-	public void setLstComposant(List<Composant> lstComposant) {
-		this.lstComposant = lstComposant;
-	}
 
 	@Override
 	public String toString() {
 		return "AddDevis [nomClient=" + nomClient + ", prenomClient=" + prenomClient + ", naissanceClient="
 				+ naissanceClient + ", telClient=" + telClient + ", adresseClient=" + adresseClient
-				+ ", professionClient=" + professionClient + ", mailClient=" + mailClient + ", creationClient="
-				+ creationClient + ", idMatriculeSalarie=" + idMatriculeSalarie + ", referenceDevis=" + referenceDevis
+				+ ", professionClient=" + professionClient + ", mailClient=" + mailClient  
+				+ ", idMatriculeSalarie=" + idMatriculeSalarie + ", referenceDevis=" + referenceDevis
 				+ ", motifDevis=" + motifDevis + ", margeComDevis=" + margeComDevis + ", margeEntDevis=" + margeEntDevis
 				+ ", idReferenceGamme=" + idReferenceGamme + ", lstAngle=" + lstAngle + ", lstSection=" + lstSection
-				+ ", lstModule=" + lstModule + ", lstComposant=" + lstComposant + "]";
+				+ ", lstModule=" + lstModule +"]";
 	}
 
 }
