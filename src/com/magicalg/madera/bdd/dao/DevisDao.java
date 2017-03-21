@@ -52,7 +52,9 @@ public class DevisDao {
 			dev.setReference(res.getString("reference"));
 			dev.setClient(res.getString("client"));
 			dev.setCreation(sdf.format(res.getDate("creation")));
-			dev.setModif(sdf.format(res.getDate("modif")));
+			if(null != res.getDate("modif")){
+				dev.setModif(sdf.format(res.getDate("modif")));
+			}
 			dev.setStatus(res.getInt("status"));
 			lst.add(dev);
 		}
@@ -191,6 +193,7 @@ public class DevisDao {
 		}
 
 		con.commit();
+		con.close();
 	}
 
 	
