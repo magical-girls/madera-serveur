@@ -144,6 +144,17 @@ public class DevisServlet extends HttpServlet {
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("charset=UTF-8");
 		response.getWriter().append("PUT En cours de construction");
+		
+		try {
+			if (!CheckTokenHelper.checkToken(request.getHeader("token"), request.getSession())) {
+				response.sendError(401, "Erreur token invalide");
+			} else {
+				String json = RequestJsonHelper.getJsonFromRequest(request);
+				
+			}
+		} catch (Exception e1) {
+			response.sendError(500, e1.getMessage());
+		}
 	}
 	
 	@Override
