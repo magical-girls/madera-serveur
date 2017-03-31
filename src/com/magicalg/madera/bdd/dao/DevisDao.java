@@ -44,7 +44,7 @@ public class DevisDao {
 				+ " max(datemodif) as modif, status_devis as status FROM devis "
 				+ "LEFT JOIN client ON client.id_client = devis.id_client "
 				+ "LEFT JOIN devis_salarie_modif ON devis.reference_devis = devis_salarie_modif.reference_devis "
-				+ "GROUP BY devis_salarie_modif.reference_devis ORDER BY devis_salarie_modif.datemodif DESC";
+				+ "GROUP BY devis.reference_devis ORDER BY devis_salarie_modif.datemodif DESC";
 		PreparedStatement stmt = con.prepareStatement(sql);
 		ResultSet res = stmt.executeQuery();
 		while (res.next()) {
