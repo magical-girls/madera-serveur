@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,9 +19,11 @@ import com.magicalg.madera.entity.Devis;
 import com.magicalg.madera.entity.Gamme;
 import com.magicalg.madera.entity.Module;
 import com.magicalg.madera.entity.Salarie;
+import com.magicalg.madera.entity.Section;
 import com.magicalg.madera.model.AddDevis;
 import com.magicalg.madera.model.DevisId;
 import com.magicalg.madera.model.ListDevis;
+import com.magicalg.madera.model.PutDevis;
 import com.magicalg.madera.model.SectionWithRefModule;
 
 public class DevisDao {
@@ -44,7 +47,8 @@ public class DevisDao {
 				+ " max(datemodif) as modif, status_devis as status FROM devis "
 				+ "LEFT JOIN client ON client.id_client = devis.id_client "
 				+ "LEFT JOIN devis_salarie_modif ON devis.reference_devis = devis_salarie_modif.reference_devis "
-				+ "GROUP BY devis.reference_devis ORDER BY devis_salarie_modif.datemodif DESC";
+				+ "WHERE devis.suppression_devis = 0 "
+				+ "GROUP BY devis_salarie_modif.reference_devis ORDER BY devis_salarie_modif.datemodif DESC";
 		PreparedStatement stmt = con.prepareStatement(sql);
 		ResultSet res = stmt.executeQuery();
 		while (res.next()) {
@@ -52,7 +56,7 @@ public class DevisDao {
 			dev.setReference(res.getString("reference"));
 			dev.setClient(res.getString("client"));
 			dev.setCreation(sdf.format(res.getDate("creation")));
-			if(null != res.getDate("modif")){
+			if (null != res.getDate("modif")) {
 				dev.setModif(sdf.format(res.getDate("modif")));
 			}
 			dev.setStatus(res.getInt("status"));
@@ -76,9 +80,10 @@ public class DevisDao {
 
 		Connection con = ConnectionBdd.connect();
 		String sql = "SELECT " + "client.id_client as idClient, " + "nom_client as nomClient, "
-				+ "prenom_client as prenomClient, " + "tel_client as telClient, " + "mail_client as mailClient, "
+				+ "prenom_client as prenomClient, " + "tel_client as telClient, " + "mail_client as mailClient, adresse_client as adresse, "
 				+ "devis.reference_devis as referenceDevis, " + "datecreation_devis as creationDevis, "
 				+ "max(datemodif) as modifDevis, " + "status_devis as statusDevis, "
+						+ "prixht_devis as prixHT, prixttc_devis as prixTTC, "
 				+ "salarie.matricule_salarie as matriculeCommercial, " + "salarie.nom_salarie as nomCommercial, "
 				+ "salarie.prenom_salarie as prenomCommercial, " + "salarie.mail_salarie as mailCommercial, "
 				+ "salarie.tel_salarie as telCommercial, " + "gamme.reference_gamme as referenceGamme, "
@@ -87,21 +92,27 @@ public class DevisDao {
 				+ "LEFT JOIN salarie ON salarie.matricule_salarie = devis.matricule_salarie "
 				+ "LEFT JOIN devis_salarie_modif ON devis.reference_devis = devis_salarie_modif.reference_devis "
 				+ "LEFT JOIN gamme ON gamme.reference_gamme = devis.reference_gamme "
-				+ "WHERE devis.reference_devis = ? AND devis.suppression_devis = 0 "
-				+ "GROUP BY devis_salarie_modif.reference_devis ORDER BY devis_salarie_modif.datemodif DESC";
+				+ "WHERE devis.reference_devis = ? "
+				+ "GROUP BY devis_salarie_modif.reference_devis ";
 		PreparedStatement stmt = con.prepareStatement(sql);
 		stmt.setString(1, reference);
 		ResultSet res = stmt.executeQuery();
 		while (res.next()) {
 			Client client = new Client(res.getInt("idClient"), res.getString("nomClient"),
-					res.getString("prenomClient"), null, res.getString("telClient"), null, null,
+					res.getString("prenomClient"), null, res.getString("telClient"), res.getString("adresse"), null,
 					res.getString("mailClient"), null);
 			devis.setClient(client);
 			Devis dev = new Devis();
 			dev.setReference(res.getString("referenceDevis"));
 			dev.setStatus(res.getInt("statusDevis"));
-			dev.setDateCreation(sdf.format(res.getDate("creationDevis")));
-			dev.setMotif(sdf.format(res.getDate("modifDevis")));
+			if (null != res.getDate("creationDevis")) {
+				dev.setDateCreation(sdf.format(res.getDate("creationDevis")));
+			}
+			if (null != res.getDate("modifDevis")) {
+				dev.setMotif(sdf.format(res.getDate("modifDevis")));
+			}
+			dev.setPrixHT(res.getFloat("prixHT"));
+			dev.setPrixTTC(res.getFloat("prixTTC"));
 			devis.setDevis(dev);
 			Salarie salarie = new Salarie(res.getString("matriculeCommercial"), res.getString("nomCommercial"),
 					res.getString("prenomCommercial"), res.getString("mailCommercial"), res.getString("telCommercial"));
@@ -191,22 +202,105 @@ public class DevisDao {
 			con.close();
 			throw new SQLException("Erreur pendant l'enregistrement des Angles : " + e.getMessage());
 		}
+		insertModifForDevis(devis,con);
 
 		con.commit();
 		con.close();
 	}
 
-	
-	
-	
-	
+	public static void updateDevis(PutDevis devis) throws Exception {
+		Client client = ClientDao.getClientById(devis.getClient().getId());
+		if (!client.equals(devis.getClient())) {
+			ClientDao.updateCient(client);
+		}
+		String sql = "UPDATE devis SET motif_devis = ?, status_devis = ?, datefin_devis = ?, tempsconstr_devis = ?,"
+				+ " prixttc_devis = ?, prixht_devis = ?, margeCom_devis = ?, margeEnt_devis = ?, reference_gamme = ? WHERE reference_devis = ?";
+		Connection con = ConnectionBdd.connect();
+		PreparedStatement stmt = con.prepareStatement(sql);
+		stmt.setString(1, devis.getDevis().getMotif());
+		if (devis.getDevis().getStatus().equals("Refusé")) {
+			stmt.setInt(2, -1);
+			stmt.setTimestamp(3, new Timestamp(new java.util.Date().getTime()));
+		} else if (devis.getDevis().getStatus().equals("En attente")) {
+			stmt.setInt(2, 1);
+			stmt.setTimestamp(3, null);
+		} else if (devis.getDevis().getStatus().equals("Validé")) {
+			stmt.setInt(2, 2);
+			stmt.setTimestamp(3, new Timestamp(new java.util.Date().getTime()));
+		} else {
+			stmt.setInt(2, 0);
+			stmt.setTimestamp(3, null);
+		}
+		stmt.setInt(4, devis.getDevis().getTempsContruction());
+		stmt.setFloat(5, devis.getDevis().getPrixTTC());
+		stmt.setFloat(6, devis.getDevis().getPrixHT());
+		stmt.setFloat(7, devis.getDevis().getMargeCom());
+		stmt.setFloat(8, devis.getDevis().getMargeEnt());
+		stmt.setString(9, devis.getGamme().getIdReference());
+		stmt.setString(10, devis.getDevis().getReference());
+		stmt.executeUpdate();
+		stmt.close();
+
+		if (null != devis.getLstAngle() && !devis.getLstAngle().isEmpty()) {
+			for (Angle angle : devis.getLstAngle()) {
+				String sqlAngle = "SELECT * FROM angle WHERE id_angle = ?";
+				PreparedStatement stmtAngle = con.prepareStatement(sqlAngle);
+				stmtAngle.setInt(1, angle.getId());
+				ResultSet res = stmtAngle.executeQuery();
+				if (res.next()) {
+					String updateAngle = "UPDATE angle SET type_angle = ?, degre_angle = ?,"
+							+ " moduleA = ?, moduleB = ? WHERE id_angle = ?";
+					PreparedStatement stmtUpdateAngle = con.prepareStatement(updateAngle);
+					stmtUpdateAngle.setString(1, angle.getType());
+					stmtUpdateAngle.setFloat(2, angle.getDegre());
+					stmtUpdateAngle.setString(3, angle.getModuleA());
+					stmtUpdateAngle.setString(4, angle.getModuleB());
+					stmtUpdateAngle.setInt(5, angle.getId());
+					stmtUpdateAngle.executeUpdate();
+					stmtUpdateAngle.close();
+				}
+				stmtAngle.close();
+			}
+		} else {
+			String sqlDel = "DELETE FROM angle WHERE reference_devis = ? ";
+			PreparedStatement stmtDel = con.prepareStatement(sqlDel);
+			stmtDel.setString(1, devis.getDevis().getReference());
+			stmtDel.executeUpdate();
+			stmtDel.close();
+		}
+		
+		if (null != devis.getLstSection() && !devis.getLstSection().isEmpty()) {
+			for (Section section : devis.getLstSection()) {
+				String sqlSection = "SELECT * FROM section WHERE id_section = ?";
+				PreparedStatement stmtSection = con.prepareStatement(sqlSection);
+				stmtSection.setInt(1, section.getId());
+				ResultSet res = stmtSection.executeQuery();
+				if (res.next()) {
+					String updateAngle = "UPDATE section SET longueur_section = ? WHERE id_section = ?";
+					PreparedStatement stmtUpdateSection = con.prepareStatement(updateAngle);
+					stmtUpdateSection.setFloat(1, section.getLongueur());
+					stmtUpdateSection.setInt(2, section.getId());
+					stmtUpdateSection.executeUpdate();
+					stmtUpdateSection.close();
+				}
+				stmtSection.close();
+			}
+		} else {
+			String sqlDel = "DELETE section FROM section "
+					+ "INNER JOIN devis_module_choix ON devis_module_choix.id_devismod = section.id_devis_mod "
+					+ "WHERE devis_module_choix.reference_devis = ? ";
+			PreparedStatement stmtDel = con.prepareStatement(sqlDel);
+			stmtDel.setString(1, devis.getDevis().getReference());
+			stmtDel.executeUpdate();
+			stmtDel.close();
+		}
+
+	}
+
 	/**************************************************************************************/
 	/** PRIVATE METHODE */
 	/**************************************************************************************/
 
-	
-	
-	
 	/**
 	 * INSERT angle pour devis
 	 * 
@@ -217,12 +311,13 @@ public class DevisDao {
 	private static void insertAngleForDevis(AddDevis devis, Connection con) throws SQLException {
 
 		for (Angle angle : devis.getLstAngle()) {
-			String sqlAngle = "INSERT INTO angle (type_angle, degre_angle, moduleA, moduleB) VALUES (?,?,?,?)";
+			String sqlAngle = "INSERT INTO angle (type_angle, degre_angle, moduleA, moduleB, reference_devis) VALUES (?,?,?,?,?)";
 			PreparedStatement stmt = con.prepareStatement(sqlAngle);
 			stmt.setString(1, angle.getType());
 			stmt.setFloat(2, angle.getDegre());
 			stmt.setString(3, angle.getModuleA());
 			stmt.setString(4, angle.getModuleB());
+			stmt.setString(5, devis.getReferenceDevis());
 			stmt.executeUpdate();
 		}
 	}
@@ -300,6 +395,20 @@ public class DevisDao {
 		stmtDevis.setString(7, devis.getIdReferenceGamme());
 		stmtDevis.executeUpdate();
 	}
+	
+	/**
+	 * 
+	 * @param devis
+	 * @param con
+	 * @throws Exception
+	 */
+	private static void insertModifForDevis(AddDevis devis, Connection con) throws Exception {
+		String sqlDevis = "INSERT INTO devis_salarie_modif (reference_devis, matricule_salarie) VALUES (?,?)";
+		PreparedStatement stmtDevis = con.prepareStatement(sqlDevis);
+		stmtDevis.setString(1, devis.getReferenceDevis());
+		stmtDevis.setString(2, devis.getIdMatriculeSalarie());
+		stmtDevis.executeUpdate();
+	}
 
 	/**
 	 * INSERT client pour le devis
@@ -343,8 +452,8 @@ public class DevisDao {
 		Angle angle = null;
 		String sql = "SELECT id_angle AS idAngle, type_angle AS typeAngle, degre_angle AS degreAngle, moduleA, moduleB FROM angle "
 				+ "LEFT JOIN section ON section.id_section = angle.moduleA "
-				+ "LEFT JOIN devis_module_choix ON devis_module_choix.id_devismod = section.id_devis_mod "
-				+ "WHERE devis_module_choix.id_devis = ?";
+//				+ "LEFT JOIN devis_module_choix ON devis_module_choix.id_devismod = section.id_devis_mod "
+				+ "WHERE angle.reference_devis = ?";
 		PreparedStatement stmt = con.prepareStatement(sql);
 		stmt.setString(1, reference);
 		ResultSet res = stmt.executeQuery();

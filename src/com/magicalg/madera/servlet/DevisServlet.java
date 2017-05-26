@@ -22,6 +22,7 @@ import com.magicalg.madera.helper.RequestJsonHelper;
 import com.magicalg.madera.model.AddDevis;
 import com.magicalg.madera.model.DevisId;
 import com.magicalg.madera.model.ListDevis;
+import com.magicalg.madera.model.PutDevis;
 import com.magicalg.madera.model.SectionWithRefModule;
 
 /**
@@ -142,15 +143,16 @@ public class DevisServlet extends HttpServlet {
 
 	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("charset=UTF-8");
-		response.getWriter().append("PUT En cours de construction");
-		
 		try {
+			response.setContentType("charset=UTF-8");
 			if (!CheckTokenHelper.checkToken(request.getHeader("token"), request.getSession())) {
 				response.sendError(401, "Erreur token invalide");
 			} else {
 				String json = RequestJsonHelper.getJsonFromRequest(request);
-				
+				ObjectMapper mapper = new ObjectMapper();
+				PutDevis devis = mapper.readValue(new StringReader(json), PutDevis.class);
+				DevisDao.updateDevis(devis);
+				response.getWriter().append("OK");
 			}
 		} catch (Exception e1) {
 			response.sendError(500, e1.getMessage());
