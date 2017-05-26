@@ -7,6 +7,7 @@ public class Angle {
 	private Float degre;
 	private String moduleA;
 	private String moduleB;
+	private String referenceDevis;
 
 	public Angle() {
 	}
