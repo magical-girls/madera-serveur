@@ -14,6 +14,7 @@ import com.magicalg.madera.entity.Module;
 import com.magicalg.madera.entity.Section;
 import com.magicalg.madera.helper.CheckTokenHelper;
 import com.magicalg.madera.model.DevisId;
+import com.magicalg.madera.pdf.DevisPDF;
 
 /**
  * Servlet implementation class Mail
@@ -61,36 +62,13 @@ public class Mail extends HttpServlet {
 								+ "<td>Statut : </td>"
 								+ "<td>"+ devis.getDevis().getStatus()+"</td>"
 								+ "</tr>"
-								+ "<tr>"
-								+ "<td>Gamme : </td>"
-								+ "<td>"+ devis.getGamme().getIdReference() +" "+ devis.getGamme().getNom() +"</td>"
-								+ "</tr>";
-								for(Module module : devis.getLstModule()){
-										html += "<tr>"
-										+ "<td>Module : </td>"
-										+ "<td>"+ module.getIdReference() + " " + module.getCommentaire() +"</td>"
-										+ "</tr>";
-								}
-								for(Section section: devis.getLstSection()){
-									html += "<tr>"
-									+ "<td>Section : </td>"
-									+ "<td>"+ section.getId() + " " + section.getLongueur() +" cm </td>"
-									+ "</tr>";
-								}
-								html += "<tr>"
-								+ "<td>Prix HT : </td>"
-								+ "<td>"+ df.format(devis.getDevis().getPrixHT())+" €</td>"
-								+ "</tr>"
-								+ "<tr>"
-								+ "<td>Prix TTC: </td>"
-								+ "<td>"+ df.format(devis.getDevis().getPrixTTC())+" €</td>"
-								+ "</tr>"
 								+ "</table>"
+								+ "<p style=\"text-align : left\">Votre devis en pièce jointe. <br/>Merci de votre confiance, l'équipe MADERA</p>"
 								+ "</html>";
-						com.magicalg.madera.helper.Mail.sendMail(devis.getClient().getMail(), "Devis Madera", html);
+						DevisPDF pdf = new DevisPDF(devis);
+						com.magicalg.madera.helper.Mail.sendMail(devis.getClient().getMail(), "Devis Madera", html, pdf.getDevisPdf());
 						response.getWriter().append(html);
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					
