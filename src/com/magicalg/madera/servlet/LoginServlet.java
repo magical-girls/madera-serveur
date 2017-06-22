@@ -32,7 +32,7 @@ public class LoginServlet extends HttpServlet {
 		LoginWithSalarie login = null;
 		try {
 			login = LoginDao.checkLogin(name, pwd);
-			if(null != login && null != login.getLogin().getId()){
+			if(null != login){
 				String token = AEScrypt.encrypt(login.getLogin().getLogin()) + "."
 						+ AEScrypt.encrypt(login.getLogin().getMdp()) + "."
 						+ AEScrypt.encrypt(login.getLogin().getMatriculeSalarie()) + "."

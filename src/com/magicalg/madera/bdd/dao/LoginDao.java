@@ -17,7 +17,7 @@ public class LoginDao {
 		Connection con = ConnectionBdd.connect();
 		Login login = new Login();
 		Salarie salarie = new Salarie();
-		LoginWithSalarie loginWithSalarielogin = new LoginWithSalarie();
+		LoginWithSalarie loginWithSalarielogin = null;
 		String sql = "SELECT id_login, login_login, mdp_login, login.matricule_salarie, nom_salarie, "
 				+ "prenom_salarie, mail_salarie, tel_salarie FROM login "
 				+ "LEFT JOIN salarie ON salarie.matricule_salarie = login.matricule_salarie "
@@ -27,6 +27,7 @@ public class LoginDao {
 		stmt.setString(2, pwd);
 		ResultSet res = stmt.executeQuery();
 		while(res.next()){
+			loginWithSalarielogin = new LoginWithSalarie();
 			login.setId(res.getInt("id_login"));
 			login.setLogin(res.getString("login_login"));
 			login.setMdp(res.getString("mdp_login"));
