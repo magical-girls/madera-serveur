@@ -2,12 +2,10 @@ package com.magicalg.madera.model;
 
 import java.util.List;
 
-import com.magicalg.madera.entity.Angle;
 import com.magicalg.madera.entity.Client;
 import com.magicalg.madera.entity.Composant;
 import com.magicalg.madera.entity.Devis;
 import com.magicalg.madera.entity.Gamme;
-import com.magicalg.madera.entity.Module;
 import com.magicalg.madera.entity.Salarie;
 
 public class DevisId {
@@ -16,9 +14,7 @@ public class DevisId {
 	private Salarie salarie;
 	private Devis devis;
 	private Gamme gamme;
-	private List<Angle> lstAngle;
-	private List<SectionWithRefModule> lstSection;
-	private List<Module> lstModule;
+	private List<Modules> lstModule;
 	private List<Composant> lstComposant;
 
 	public Client getClient() {
@@ -53,27 +49,12 @@ public class DevisId {
 		this.gamme = gamme;
 	}
 
-	public List<Angle> getLstAngle() {
-		return lstAngle;
-	}
 
-	public void setLstAngle(List<Angle> lstAngle) {
-		this.lstAngle = lstAngle;
-	}
-
-	public List<SectionWithRefModule> getLstSection() {
-		return lstSection;
-	}
-
-	public void setLstSection(List<SectionWithRefModule> lstSection) {
-		this.lstSection = lstSection;
-	}
-
-	public List<Module> getLstModule() {
+	public List<Modules> getLstModule() {
 		return lstModule;
 	}
 
-	public void setLstModule(List<Module> lstModule) {
+	public void setLstModule(List<Modules> lstModule) {
 		this.lstModule = lstModule;
 	}
 
@@ -88,8 +69,7 @@ public class DevisId {
 	@Override
 	public String toString() {
 		return "DevisId [client=" + client + ", salarie=" + salarie + ", devis=" + devis + ", gamme=" + gamme
-				+ ", lstAngle=" + lstAngle + ", lstSection=" + lstSection + ", lstModule=" + lstModule
-				+ ", lstComposant=" + lstComposant + "]";
+				+ ", lstModule=" + lstModule + ", lstComposant=" + lstComposant + "]";
 	}
 
 }

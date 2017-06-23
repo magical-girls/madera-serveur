@@ -4,21 +4,14 @@ public class Angle {
 
 	private Integer id;
 	private String type;
-	private Float degre;
-	private String moduleA;
-	private String moduleB;
-	private String referenceDevis;
 
 	public Angle() {
 	}
 
-	public Angle(Integer id, String type, Float degre, String moduleA, String moduleB) {
+	public Angle(Integer id, String type) {
 		super();
 		this.id = id;
 		this.type = type;
-		this.degre = degre;
-		this.moduleA = moduleA;
-		this.moduleB = moduleB;
 	}
 
 	public Integer getId() {
@@ -37,34 +30,9 @@ public class Angle {
 		this.type = type;
 	}
 
-	public Float getDegre() {
-		return degre;
-	}
-
-	public void setDegre(Float degre) {
-		this.degre = degre;
-	}
-
-	public String getModuleA() {
-		return moduleA;
-	}
-
-	public void setModuleA(String sectionA) {
-		this.moduleA = sectionA;
-	}
-
-	public String getModuleB() {
-		return moduleB;
-	}
-
-	public void setSectionB(String sectionB) {
-		this.moduleB = sectionB;
-	}
-
 	@Override
 	public String toString() {
-		return "Angle [id=" + id + ", type=" + type + ", degre=" + degre + ", moduleA=" + moduleA + ", moduleB="
-				+ moduleB + "]";
+		return "Angle [id=" + id + ", type=" + type +"]";
 	}
 
 }

@@ -16,6 +16,7 @@ import com.magicalg.madera.entity.Angle;
 import com.magicalg.madera.entity.Client;
 import com.magicalg.madera.entity.Composant;
 import com.magicalg.madera.entity.Devis;
+import com.magicalg.madera.entity.DevisModuleChoix;
 import com.magicalg.madera.entity.Gamme;
 import com.magicalg.madera.entity.Module;
 import com.magicalg.madera.entity.Salarie;
@@ -23,6 +24,7 @@ import com.magicalg.madera.entity.Section;
 import com.magicalg.madera.model.AddDevis;
 import com.magicalg.madera.model.DevisId;
 import com.magicalg.madera.model.ListDevis;
+import com.magicalg.madera.model.Modules;
 import com.magicalg.madera.model.PutDevis;
 import com.magicalg.madera.model.SectionWithRefModule;
 
@@ -122,10 +124,8 @@ public class DevisDao {
 			gamme.setNom(res.getString("nomGamme"));
 			gamme.setCommentaire(res.getString("commentaireGamme"));
 			devis.setGamme(gamme);
-			devis.setLstAngle(getAngleByRefDevis(dev.getReference(), con));
 			devis.setLstComposant(getComposantByRefDevis(dev.getReference(), con));
 			devis.setLstModule(getModuleByRefDevis(dev.getReference(), con));
-			devis.setLstSection(getSectionByRefDevis(dev.getReference(), con));
 		}
 		stmt.close();
 		con.close();
@@ -301,26 +301,6 @@ public class DevisDao {
 	/** PRIVATE METHODE */
 	/**************************************************************************************/
 
-	/**
-	 * INSERT angle pour devis
-	 * 
-	 * @param devis
-	 * @param con
-	 * @throws SQLException
-	 */
-	private static void insertAngleForDevis(AddDevis devis, Connection con) throws SQLException {
-
-		for (Angle angle : devis.getLstAngle()) {
-			String sqlAngle = "INSERT INTO angle (type_angle, degre_angle, moduleA, moduleB, reference_devis) VALUES (?,?,?,?,?)";
-			PreparedStatement stmt = con.prepareStatement(sqlAngle);
-			stmt.setString(1, angle.getType());
-			stmt.setFloat(2, angle.getDegre());
-			stmt.setString(3, angle.getModuleA());
-			stmt.setString(4, angle.getModuleB());
-			stmt.setString(5, devis.getReferenceDevis());
-			stmt.executeUpdate();
-		}
-	}
 
 	/**
 	 * INSERT choix des modules pour devis
@@ -356,23 +336,6 @@ public class DevisDao {
 		}
 	}
 
-	/**
-	 * INSERT section pour devis
-	 * 
-	 * @param idDevisMod
-	 * @param section
-	 * @param con
-	 * @throws Exception
-	 */
-	private static void insertSectionForDevis(Integer idDevisMod, SectionWithRefModule section, Connection con)
-			throws Exception {
-
-		String sqlSection = "INSERT INTO section (longueur_section, id_devis_mod) VALUES (?,?)";
-		PreparedStatement stmtSection = con.prepareStatement(sqlSection);
-		stmtSection.setFloat(1, section.getLongueur());
-		stmtSection.setInt(2, idDevisMod);
-		stmtSection.executeUpdate();
-	}
 
 	/**
 	 * INSERT devis pour le devis
@@ -438,94 +401,29 @@ public class DevisDao {
 		return idClient;
 	}
 
-	/**
-	 * Obtenir les angles par référence du devis
-	 * 
-	 * @param reference
-	 * @param con
-	 * @return
-	 * @throws Exception
-	 */
-	private static List<Angle> getAngleByRefDevis(String reference, Connection con) throws Exception {
-
-		List<Angle> lstAngle = new ArrayList<>();
-		Angle angle = null;
-		String sql = "SELECT id_angle AS idAngle, type_angle AS typeAngle, degre_angle AS degreAngle, moduleA, moduleB FROM angle "
-				+ "LEFT JOIN section ON section.id_section = angle.moduleA "
-//				+ "LEFT JOIN devis_module_choix ON devis_module_choix.id_devismod = section.id_devis_mod "
-				+ "WHERE angle.reference_devis = ?";
+	private static List<Modules> getModuleByRefDevis(String reference, Connection con) throws Exception {
+		List<Modules> lstDevisModuleChoix = new ArrayList<>();
+		Modules mod = null;
+		String sql= "SELECT devis_module_choix.id_devismod as idChoixModule, a.reference_module as idModuleA,"
+				+ " c.nom_section as sectionA, devis_module_choix.longueurA, b.reference_module as idModuleB,"
+				+ " d.nom_section as sectionB, devis_module_choix.longueurB, angle.type_angle, devis_module_choix.angle FROM devis_module_choix"
+				+ " INNER JOIN module as a ON a.reference_module = devis_module_choix.moduleA"
+				+ " INNER JOIN module as b ON b.reference_module = devis_module_choix.moduleB"
+				+ " INNER JOIN section as c ON c.id_section = devis_module_choix.id_sectionA"
+				+ " INNER JOIN section as d ON d.id_section = devis_module_choix.id_sectionB"
+				+ " INNER JOIN angle ON angle.id_angle = devis_module_choix.id_angle"
+				+ " WHERE devis_module_choix.id_devis = ?";
 		PreparedStatement stmt = con.prepareStatement(sql);
 		stmt.setString(1, reference);
 		ResultSet res = stmt.executeQuery();
 		while (res.next()) {
-			angle = new Angle();
-			angle.setId(res.getInt("idAngle"));
-			angle.setType(res.getString("typeAngle"));
-			angle.setDegre(res.getFloat("degreAngle"));
-			angle.setModuleA(res.getString("moduleA"));
-			angle.setSectionB(res.getString("moduleB"));
-			lstAngle.add(angle);
+			mod = new Modules();
+			mod.setIdChoixModule(res.getInt("idChoixModule"));
+			mod.getModuleA().setId(res.getString("idModuleA"));
+			//TODO
 		}
-		stmt.close();
-		return lstAngle;
-
-	}
-
-	/**
-	 * Liste des sections avec les références des modules
-	 * 
-	 * @param reference
-	 * @param con
-	 * @return
-	 * @throws Exception
-	 */
-	private static List<SectionWithRefModule> getSectionByRefDevis(String reference, Connection con) throws Exception {
-		List<SectionWithRefModule> lstSection = new ArrayList<>();
-		SectionWithRefModule section = null;
-		String sql = "select id_section as idSection, longueur_section as longueurSection, "
-				+ "devis_module_choix.reference_module as idModule from section "
-				+ "left join devis_module_choix on devis_module_choix.id_devismod = section.id_devis_mod "
-				+ "left join devis on  devis_module_choix.id_devis = devis.reference_devis "
-				+ "where devis.reference_devis = ?";
-		PreparedStatement stmt = con.prepareStatement(sql);
-		stmt.setString(1, reference);
-		ResultSet res = stmt.executeQuery();
-		while (res.next()) {
-			section = new SectionWithRefModule();
-			section.setId(res.getInt("idSection"));
-			section.setLongueur(res.getFloat("longueurSection"));
-			section.setRefModule(res.getString("idModule"));
-			lstSection.add(section);
-		}
-		stmt.close();
-		return lstSection;
-	}
-
-	/**
-	 * Listes des modules par la référence du devis
-	 * 
-	 * @param reference
-	 * @param con
-	 * @return
-	 * @throws Exception
-	 */
-	private static List<Module> getModuleByRefDevis(String reference, Connection con) throws Exception {
-		List<Module> lstModule = new ArrayList<>();
-		Module module = null;
-		String sql = "SELECT module.reference_module as idModule, module.commentaire_module as commentaire FROM module "
-				+ "LEFT JOIN devis_module_choix ON devis_module_choix.reference_module = module.reference_module "
-				+ "WHERE id_devis = ? AND module.suppression_module = 0";
-		PreparedStatement stmt = con.prepareStatement(sql);
-		stmt.setString(1, reference);
-		ResultSet res = stmt.executeQuery();
-		while (res.next()) {
-			module = new Module();
-			module.setIdReference(res.getString("idModule"));
-			module.setCommentaire(res.getString("commentaire"));
-			lstModule.add(module);
-		}
-		stmt.close();
-		return lstModule;
+		
+		return lstDevisModuleChoix;
 	}
 
 	/**
