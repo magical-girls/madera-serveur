@@ -2,9 +2,6 @@ package com.magicalg.madera.model;
 
 import java.util.List;
 
-import com.magicalg.madera.entity.Angle;
-import com.magicalg.madera.entity.Module;
-
 public class AddDevis {
 
 	private String nomClient;
@@ -20,9 +17,7 @@ public class AddDevis {
 	private Float margeComDevis;
 	private Float margeEntDevis;
 	private String idReferenceGamme;
-	private List<Angle> lstAngle;
-	private List<SectionWithRefModule> lstSection;
-	private List<Module> lstModule;
+	private List<Modules> modules;
 
 	public String getNomClient() {
 		return nomClient;
@@ -128,28 +123,12 @@ public class AddDevis {
 		this.idReferenceGamme = idReferenceGamme;
 	}
 
-	public List<Angle> getLstAngle() {
-		return lstAngle;
+	public List<Modules> getModules() {
+		return modules;
 	}
 
-	public void setLstAngle(List<Angle> lstAngle) {
-		this.lstAngle = lstAngle;
-	}
-
-	public List<SectionWithRefModule> getLstSection() {
-		return lstSection;
-	}
-
-	public void setLstSection(List<SectionWithRefModule> lstSection) {
-		this.lstSection = lstSection;
-	}
-
-	public List<Module> getLstModule() {
-		return lstModule;
-	}
-
-	public void setLstModule(List<Module> lstModule) {
-		this.lstModule = lstModule;
+	public void setModules(List<Modules> lstModule) {
+		this.modules = lstModule;
 	}
 
 
@@ -160,8 +139,8 @@ public class AddDevis {
 				+ ", professionClient=" + professionClient + ", mailClient=" + mailClient  
 				+ ", idMatriculeSalarie=" + idMatriculeSalarie + ", referenceDevis=" + referenceDevis
 				+ ", motifDevis=" + motifDevis + ", margeComDevis=" + margeComDevis + ", margeEntDevis=" + margeEntDevis
-				+ ", idReferenceGamme=" + idReferenceGamme + ", lstAngle=" + lstAngle + ", lstSection=" + lstSection
-				+ ", lstModule=" + lstModule +"]";
+				+ ", idReferenceGamme=" + idReferenceGamme  + ", lstSection="
+				+ ", lstModule=" + modules +"]";
 	}
 
 }

@@ -190,20 +190,20 @@ public class DevisPDF {
 		table.addCell(c3);
 
 		if (!devis.getLstModule().isEmpty()) {
-			for (Module module : devis.getLstModule()) {
-				c3 = new PdfPCell(new Phrase(module.getIdReference()));
-				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
-				table.addCell(c3);
-				c3 = new PdfPCell(new Phrase(module.getCommentaire()));
-				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
-				table.addCell(c3);
-				c3 = new PdfPCell(new Phrase(" "));
-				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
-				table.addCell(c3);
-				c3 = new PdfPCell(new Phrase(" "));
-				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
-				table.addCell(c3);
-			}
+//			for (Module module : devis.getLstModule()) {
+//				c3 = new PdfPCell(new Phrase(module.getIdReference()));
+//				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
+//				table.addCell(c3);
+//				c3 = new PdfPCell(new Phrase(module.getCommentaire()));
+//				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
+//				table.addCell(c3);
+//				c3 = new PdfPCell(new Phrase(" "));
+//				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
+//				table.addCell(c3);
+//				c3 = new PdfPCell(new Phrase(" "));
+//				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
+//				table.addCell(c3);
+//			}
 		}
 	}
 
@@ -252,23 +252,23 @@ public class DevisPDF {
 		c3.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.addCell(c3);
 
-		if (!devis.getLstAngle().isEmpty()) {
-			for (Angle angle : devis.getLstAngle()) {
-				c3 = new PdfPCell(new Phrase(" "));
-				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
-				table.addCell(c3);
-				c3 = new PdfPCell(new Phrase("Angle entre " + angle.getModuleA() + " et " + angle.getModuleB() + " : "
-						+ angle.getDegre() + "°"));
-				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
-				table.addCell(c3);
-				c3 = new PdfPCell(new Phrase(" "));
-				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
-				table.addCell(c3);
-				c3 = new PdfPCell(new Phrase(" "));
-				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
-				table.addCell(c3);
-			}
-		}
+//		if (!devis.getLstAngle().isEmpty()) {
+//			for (Angle angle : devis.getLstAngle()) {
+//				c3 = new PdfPCell(new Phrase(" "));
+//				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
+//				table.addCell(c3);
+//				c3 = new PdfPCell(new Phrase("Angle entre " + angle.getModuleA() + " et " + angle.getModuleB() + " : "
+//						+ angle.getDegre() + "°"));
+//				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
+//				table.addCell(c3);
+//				c3 = new PdfPCell(new Phrase(" "));
+//				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
+//				table.addCell(c3);
+//				c3 = new PdfPCell(new Phrase(" "));
+//				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
+//				table.addCell(c3);
+//			}
+//		}
 	}
 
 	private static void addFooterTotal() {

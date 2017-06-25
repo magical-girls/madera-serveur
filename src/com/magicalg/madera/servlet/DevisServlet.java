@@ -15,15 +15,12 @@ import org.json.JSONObject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.magicalg.madera.bdd.dao.DevisDao;
-import com.magicalg.madera.entity.Angle;
-import com.magicalg.madera.entity.Module;
 import com.magicalg.madera.helper.CheckTokenHelper;
 import com.magicalg.madera.helper.RequestJsonHelper;
 import com.magicalg.madera.model.AddDevis;
 import com.magicalg.madera.model.DevisId;
 import com.magicalg.madera.model.ListDevis;
 import com.magicalg.madera.model.PutDevis;
-import com.magicalg.madera.model.SectionWithRefModule;
 
 /**
  * Servlet implementation class DevisServlet
@@ -56,10 +53,10 @@ public class DevisServlet extends HttpServlet {
 				} else {
 					//TODO
 					/* Devis hors service pour le moment, objet à refaire*/
-//					DevisId devis = DevisDao.getDevisById(request.getParameter("id"));
-//					ObjectMapper mapper = new ObjectMapper();
-//					response.getWriter().append(mapper.writeValueAsString(devis));
-					response.getWriter().append(devisJSON);
+					 DevisId devis = DevisDao.getDevisById(request.getParameter("id"));
+					ObjectMapper mapper = new ObjectMapper();
+					response.getWriter().append(mapper.writeValueAsString(devis));
+//					response.getWriter().append(devisJSON);
 				}
 			}
 		} catch (Exception e1) {
@@ -82,14 +79,15 @@ public class DevisServlet extends HttpServlet {
 			} else {
 				ObjectMapper mapper = new ObjectMapper(); 
 				String json = RequestJsonHelper.getJsonFromRequest(request);
+				System.out.println(json);
 				AddDevis devis = mapper.readValue(new StringReader(json), AddDevis.class);
+				System.out.println(devis);
 				String check = checkNullAddDevis(devis);
 				if(!check.isEmpty()){
 					response.sendError(500, check);
 				} else {
 					System.out.println(devis.toString());
-					//TODO addDevis
-					//DevisDao.addDevis(devis);
+					DevisDao.addDevis(devis);
 					response.getWriter().append("Ok");
 				}
 			}
@@ -120,32 +118,7 @@ public class DevisServlet extends HttpServlet {
 			return "Matricule du commercial du devis obligatoire";
 		} else if (null == devis.getIdReferenceGamme()){
 			return "Référence gamme du devis obligatoire";
-		} else if(null != devis.getLstModule() && !devis.getLstModule().isEmpty()){
-			for(Module module : devis.getLstModule()){
-				if(null == module.getIdReference()){
-					return "Référence des modules obligatoire";
-				}
-			}
-		} else if(null != devis.getLstSection() && !devis.getLstSection().isEmpty()){
-			for(SectionWithRefModule section : devis.getLstSection()){
-				if(null == section.getLongueur()){
-					return "Longueur de section du devis obligatoire";
-				} else if (null == section.getRefModule()){
-					return "Référence du module pour la section " + section.getLongueur() + " obligatoire";
-				}
-			}
-		} else if(null != devis.getLstAngle() && !devis.getLstAngle().isEmpty()){
-			for(Angle angle : devis.getLstAngle()){
-				if(null == angle.getDegre()){
-					return "Degré d'angle manquant";
-				} else if (null == angle.getType()){
-					return "Type d'angle obligatoire";
-				} else if (null == angle.getModuleA() || null == angle.getModuleB()){
-					return "Deux modules sont obligatoires pour faire un angle";
-				}
-			}
 		}
-		
 		return "";
 	}
 
