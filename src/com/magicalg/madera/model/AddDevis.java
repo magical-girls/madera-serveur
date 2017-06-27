@@ -127,20 +127,21 @@ public class AddDevis {
 		return modules;
 	}
 
-	public void setModules(List<Modules> lstModule) {
-		this.modules = lstModule;
+	public void setModules(List<Modules> modules) {
+		this.modules = modules;
 	}
-
 
 	@Override
 	public String toString() {
 		return "AddDevis [nomClient=" + nomClient + ", prenomClient=" + prenomClient + ", naissanceClient="
 				+ naissanceClient + ", telClient=" + telClient + ", adresseClient=" + adresseClient
-				+ ", professionClient=" + professionClient + ", mailClient=" + mailClient  
-				+ ", idMatriculeSalarie=" + idMatriculeSalarie + ", referenceDevis=" + referenceDevis
-				+ ", motifDevis=" + motifDevis + ", margeComDevis=" + margeComDevis + ", margeEntDevis=" + margeEntDevis
-				+ ", idReferenceGamme=" + idReferenceGamme  + ", lstSection="
-				+ ", lstModule=" + modules +"]";
+				+ ", professionClient=" + professionClient + ", mailClient=" + mailClient + ", idMatriculeSalarie="
+				+ idMatriculeSalarie + ", referenceDevis=" + referenceDevis + ", motifDevis=" + motifDevis
+				+ ", margeComDevis=" + margeComDevis + ", margeEntDevis=" + margeEntDevis + ", idReferenceGamme="
+				+ idReferenceGamme + ", modules=" + modules + "]";
 	}
+
+
+	
 
 }

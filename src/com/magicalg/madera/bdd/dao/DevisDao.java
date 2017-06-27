@@ -230,60 +230,15 @@ public class DevisDao {
 		stmt.setString(10, devis.getDevis().getReference());
 		stmt.executeUpdate();
 		stmt.close();
-
-		if (null != devis.getLstAngle() && !devis.getLstAngle().isEmpty()) {
-			for (Angle angle : devis.getLstAngle()) {
-				String sqlAngle = "SELECT * FROM angle WHERE id_angle = ?";
-				PreparedStatement stmtAngle = con.prepareStatement(sqlAngle);
-				stmtAngle.setInt(1, angle.getId());
-				ResultSet res = stmtAngle.executeQuery();
-				if (res.next()) {
-					String updateAngle = "UPDATE angle SET type_angle = ?, degre_angle = ?,"
-							+ " moduleA = ?, moduleB = ? WHERE id_angle = ?";
-					PreparedStatement stmtUpdateAngle = con.prepareStatement(updateAngle);
-					stmtUpdateAngle.setString(1, angle.getType());
-//TODO					stmtUpdateAngle.setFloat(2, angle.getDegre());
-//TODO					stmtUpdateAngle.setString(3, angle.getModuleA());
-//TODO					stmtUpdateAngle.setString(4, angle.getModuleB());
-					stmtUpdateAngle.setInt(5, angle.getId());
-					stmtUpdateAngle.executeUpdate();
-					stmtUpdateAngle.close();
-				}
-				stmtAngle.close();
+		
+		for(Modules modules : devis.getModules()){
+			if(null == modules.getIdChoixModule()){
+				insertChoixModuleForDevisUpdate(devis, con);
+			} else {
+				updateChoixModuleForDevisUpdate(devis, con);
 			}
-		} else {
-			String sqlDel = "DELETE FROM angle WHERE reference_devis = ? ";
-			PreparedStatement stmtDel = con.prepareStatement(sqlDel);
-			stmtDel.setString(1, devis.getDevis().getReference());
-			stmtDel.executeUpdate();
-			stmtDel.close();
 		}
 		
-		if (null != devis.getLstSection() && !devis.getLstSection().isEmpty()) {
-			for (Section section : devis.getLstSection()) {
-				String sqlSection = "SELECT * FROM section WHERE id_section = ?";
-				PreparedStatement stmtSection = con.prepareStatement(sqlSection);
-				stmtSection.setInt(1, section.getId());
-				ResultSet res = stmtSection.executeQuery();
-				if (res.next()) {
-					String updateAngle = "UPDATE section SET longueur_section = ? WHERE id_section = ?";
-					PreparedStatement stmtUpdateSection = con.prepareStatement(updateAngle);
-//TODO					stmtUpdateSection.setFloat(1, section.getLongueur());
-					stmtUpdateSection.setInt(2, section.getId());
-					stmtUpdateSection.executeUpdate();
-					stmtUpdateSection.close();
-				}
-				stmtSection.close();
-			}
-		} else {
-			String sqlDel = "DELETE section FROM section "
-					+ "INNER JOIN devis_module_choix ON devis_module_choix.id_devismod = section.id_devis_mod "
-					+ "WHERE devis_module_choix.reference_devis = ? ";
-			PreparedStatement stmtDel = con.prepareStatement(sqlDel);
-			stmtDel.setString(1, devis.getDevis().getReference());
-			stmtDel.executeUpdate();
-			stmtDel.close();
-		}
 
 	}
 
@@ -307,6 +262,8 @@ public class DevisDao {
 		String sqlTypeAngle = "SELECT id_angle FROM angle WHERE type_angle = ?";
 
 		for (Modules refModule : devis.getModules()) {
+			
+			
 			//Section Module A
 			PreparedStatement stmt = con.prepareStatement(sqlGetSection);
 			stmt.setString(1, refModule.getModuleA().getSection());
@@ -315,8 +272,9 @@ public class DevisDao {
 				sectionA = set.getInt("id_section");
 			}
 			stmt.close();
-			System.out.println("****************** refModule.getModuleB().getId() : "+refModule.getModuleB().getId());
-			System.out.println("****************** refModule.getModuleB() : "+refModule.getModuleB());
+			
+			
+			
 			//section Module B
 			if (null != refModule.getModuleB().getId()){
 				PreparedStatement stmt2 = con.prepareStatement(sqlGetSection);
@@ -344,17 +302,145 @@ public class DevisDao {
 				stmtDevMod.setString(2, refModule.getModuleA().getId());
 				stmtDevMod.setInt(3, sectionA);
 				stmtDevMod.setInt(4, refModule.getModuleA().getLongueur());
-				System.out.println("****************** refModule.getModuleB().getId() stmt : "+refModule.getModuleB().getId());
 				stmtDevMod.setString(5, refModule.getModuleB().getId());
-				stmtDevMod.setObject(6, null, sectionB);
-				stmtDevMod.setObject(7, null, refModule.getModuleB().getLongueur());
-				stmtDevMod.setObject(8, null, typeAngle);
-				stmtDevMod.setObject(9, null, refModule.getAngle());
+				stmtDevMod.setObject(6, sectionB);
+				stmtDevMod.setObject(7, refModule.getModuleB().getLongueur());
+				stmtDevMod.setObject(8, typeAngle);
+				stmtDevMod.setObject(9, refModule.getAngle());
 				stmtDevMod.executeUpdate();
 		}
 	}
 
 
+	/**
+	 * INSERT choix des modules pour devis update
+	 * 
+	 * @param devis
+	 * @param con
+	 * @throws Exception
+	 */
+	private static void insertChoixModuleForDevisUpdate(PutDevis devis, Connection con) throws Exception {
+		Integer sectionA = null;
+		Integer sectionB = null;
+		Integer typeAngle = null;
+		String sqlGetSection = "SELECT id_section FROM section WHERE nom_section = ?";
+		String sqlTypeAngle = "SELECT id_angle FROM angle WHERE type_angle = ?";
+
+		for (Modules refModule : devis.getModules()) {
+			
+			
+			//Section Module A
+			PreparedStatement stmt = con.prepareStatement(sqlGetSection);
+			stmt.setString(1, refModule.getModuleA().getSection());
+			ResultSet set = stmt.executeQuery();
+			while(set.next()){
+				sectionA = set.getInt("id_section");
+			}
+			stmt.close();
+			
+			
+			
+			//section Module B
+			if (null != refModule.getModuleB().getId()){
+				PreparedStatement stmt2 = con.prepareStatement(sqlGetSection);
+				stmt2.setString(1, refModule.getModuleB().getSection());
+				ResultSet set2 = stmt2.executeQuery();
+				while(set2.next()){
+					sectionB = set2.getInt("id_section");
+				}
+				stmt2.close();
+				
+				//type d'angle
+				PreparedStatement stmt3 = con.prepareStatement(sqlTypeAngle);
+				stmt3.setString(1, refModule.getTypeAngle());
+				ResultSet set3 = stmt3.executeQuery();
+				while(set3.next()){
+					typeAngle = set3.getInt("id_angle");
+				}
+				stmt3.close();
+			}
+			// Enregistrement devis_module_choix
+				String sqlDevisMod = "INSERT INTO devis_module_choix (id_devis, moduleA, id_sectionA,"
+						+ "longueurA, moduleB, id_sectionB, longueurB, id_angle, angle) VALUES (?,?,?,?,?,?,?,?,?)";
+				PreparedStatement stmtDevMod = con.prepareStatement(sqlDevisMod);
+				stmtDevMod.setString(1, devis.getDevis().getReference());
+				stmtDevMod.setString(2, refModule.getModuleA().getId());
+				stmtDevMod.setInt(3, sectionA);
+				stmtDevMod.setInt(4, refModule.getModuleA().getLongueur());
+				stmtDevMod.setString(5, refModule.getModuleB().getId());
+				stmtDevMod.setObject(6, sectionB);
+				stmtDevMod.setObject(7, refModule.getModuleB().getLongueur());
+				stmtDevMod.setObject(8, typeAngle);
+				stmtDevMod.setObject(9, refModule.getAngle());
+				stmtDevMod.executeUpdate();
+		}
+	}
+	
+	/**
+	 * INSERT choix des modules pour devis update
+	 * 
+	 * @param devis
+	 * @param con
+	 * @throws Exception
+	 */
+	private static void updateChoixModuleForDevisUpdate(PutDevis devis, Connection con) throws Exception {
+		Integer sectionA = null;
+		Integer sectionB = null;
+		Integer typeAngle = null;
+		String sqlGetSection = "SELECT id_section FROM section WHERE nom_section = ?";
+		String sqlTypeAngle = "SELECT id_angle FROM angle WHERE type_angle = ?";
+
+		for (Modules refModule : devis.getModules()) {
+			
+			
+			//Section Module A
+			PreparedStatement stmt = con.prepareStatement(sqlGetSection);
+			stmt.setString(1, refModule.getModuleA().getSection());
+			ResultSet set = stmt.executeQuery();
+			while(set.next()){
+				sectionA = set.getInt("id_section");
+			}
+			stmt.close();
+			
+			
+			
+			//section Module B
+			if (null != refModule.getModuleB().getId()){
+				PreparedStatement stmt2 = con.prepareStatement(sqlGetSection);
+				stmt2.setString(1, refModule.getModuleB().getSection());
+				ResultSet set2 = stmt2.executeQuery();
+				while(set2.next()){
+					sectionB = set2.getInt("id_section");
+				}
+				stmt2.close();
+				
+				//type d'angle
+				PreparedStatement stmt3 = con.prepareStatement(sqlTypeAngle);
+				stmt3.setString(1, refModule.getTypeAngle());
+				ResultSet set3 = stmt3.executeQuery();
+				while(set3.next()){
+					typeAngle = set3.getInt("id_angle");
+				}
+				stmt3.close();
+			}
+			// Enregistrement devis_module_choix
+				String sqlDevisMod = "UPDATE devis_module_choix SET (moduleA = ?, id_sectionA = ?,"
+						+ "longueurA = ?, moduleB = ?, id_sectionB = ?, longueurB = ?, id_angle = ?, angle = ?)"
+						+ " WHERE id_devismod = ?";
+				PreparedStatement stmtDevMod = con.prepareStatement(sqlDevisMod);
+				stmtDevMod.setString(1, refModule.getModuleA().getId());
+				stmtDevMod.setInt(2, sectionA);
+				stmtDevMod.setInt(3, refModule.getModuleA().getLongueur());
+				stmtDevMod.setString(4, refModule.getModuleB().getId());
+				stmtDevMod.setObject(5, sectionB);
+				stmtDevMod.setObject(6, refModule.getModuleB().getLongueur());
+				stmtDevMod.setObject(7, typeAngle);
+				stmtDevMod.setObject(8, refModule.getAngle());
+				stmtDevMod.setString(9, devis.getDevis().getReference());
+				stmtDevMod.executeUpdate();
+		}
+	}
+	
 	/**
 	 * INSERT devis pour le devis
 	 * 

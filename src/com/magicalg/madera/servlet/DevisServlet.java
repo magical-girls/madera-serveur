@@ -28,9 +28,6 @@ import com.magicalg.madera.model.PutDevis;
 @WebServlet("/devis")
 public class DevisServlet extends HttpServlet {
 	
-	/* TEMPORAIRE */
-	private final String devisJSON = "{\"client\":{\"id\":65,\"nom\":\"meli\",\"prenom\":\"meli\",\"naissance\":null,\"tel\":\"1234567891\",\"adresse\":\"adresseClient\",\"profession\":null,\"mail\":\"melissa.fontaine4@gmail.com\",\"creation\":null},\"salarie\":{\"idMatricule\":\"125RO355LM\",\"nom\":\"Bertrand\",\"prenom\":\"Arthur\",\"mail\":\"bertrand.arthur@blabla.com\",\"tel\":\"0589562332\"},\"devis\":{\"reference\":\"maReference\",\"motif\":\"05-06-2017\",\"status\":\"En cours\",\"dateCreation\":\"05-06-2017\",\"dateFin\":null,\"tempsContruction\":null,\"prixTTC\":0.0,\"prixHT\":0.0,\"margeCom\":null,\"margeEnt\":null},\"gamme\":{\"idReference\":\"G001\",\"nom\":\"Gamme finition crépi\",\"commentaire\":\"Crépi \"},\"modules\":[{\"idChoixModule\":1,\"moduleA\":{\"id\":\"M001\",\"section\":\"Contrefort\",\"longueur\":1000},\"moduleB\":{\"id\":\"M002\",\"section\":\"Contrefort\",\"longueur\":2000},\"typeAngle\":\"Entrant\",\"Angle\":90},{\"idChoixModule\":2,\"moduleA\":{\"id\":\"M002\",\"section\":\"Contrefort\",\"longueur\":2000},\"moduleB\":{\"id\":\"M003\",\"section\":\"lisse\",\"longueur\":500},\"typeAngle\":\"Sortant\",\"Angle\":90}],\"lstComposant\":[{\"idReference\":\"C001\",\"nom\":\"Crépi\",\"prixHT\":100.0,\"commentaire\":\"par pot de 25 kg\",\"stock\":5.0},{\"idReference\":\"C003\",\"nom\":\"Fenêtre\",\"prixHT\":150.0,\"commentaire\":\"Par 4, double battants\",\"stock\":5.0},{\"idReference\":\"C004\",\"nom\":\"Placo-plâtre\",\"prixHT\":70.0,\"commentaire\":\"Par lot de 25\",\"stock\":5.0},{\"idReference\":\"C005\",\"nom\":\"Visserie\",\"prixHT\":30.0,\"commentaire\":\"Par lot de 10\",\"stock\":5.0}]}";
-	
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -51,12 +48,9 @@ public class DevisServlet extends HttpServlet {
 					response.getWriter().append(jarray.toString());
 					
 				} else {
-					//TODO
-					/* Devis hors service pour le moment, objet à refaire*/
-					 DevisId devis = DevisDao.getDevisById(request.getParameter("id"));
+					DevisId devis = DevisDao.getDevisById(request.getParameter("id"));
 					ObjectMapper mapper = new ObjectMapper();
 					response.getWriter().append(mapper.writeValueAsString(devis));
-//					response.getWriter().append(devisJSON);
 				}
 			}
 		} catch (Exception e1) {
@@ -79,14 +73,11 @@ public class DevisServlet extends HttpServlet {
 			} else {
 				ObjectMapper mapper = new ObjectMapper(); 
 				String json = RequestJsonHelper.getJsonFromRequest(request);
-				System.out.println(json);
 				AddDevis devis = mapper.readValue(new StringReader(json), AddDevis.class);
-				System.out.println(devis);
 				String check = checkNullAddDevis(devis);
 				if(!check.isEmpty()){
 					response.sendError(500, check);
 				} else {
-					System.out.println(devis.toString());
 					DevisDao.addDevis(devis);
 					response.getWriter().append("Ok");
 				}
@@ -132,6 +123,7 @@ public class DevisServlet extends HttpServlet {
 				String json = RequestJsonHelper.getJsonFromRequest(request);
 				ObjectMapper mapper = new ObjectMapper();
 				PutDevis devis = mapper.readValue(new StringReader(json), PutDevis.class);
+				System.out.println("********** devis put : "+ devis);
 				DevisDao.updateDevis(devis);
 				response.getWriter().append("OK");
 			}
