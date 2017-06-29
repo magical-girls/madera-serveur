@@ -53,6 +53,10 @@ public class Devis {
 			this.status = _ENCOURS;
 		}
 	}
+	
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
 	public String getDateCreation() {
 		return dateCreation;
