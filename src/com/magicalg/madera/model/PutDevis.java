@@ -41,11 +41,8 @@ public class PutDevis {
 		return modules;
 	}
 
-<<<<<<< HEAD
+
 	public void setModules(List<Modules> modules) {
-=======
-	public void setLstModule(List<Modules> modules) {
->>>>>>> b7a5a6dcec5427acb54b2034e753f5ea0d018890
 		this.modules = modules;
 	}
 
@@ -54,9 +51,4 @@ public class PutDevis {
 		return "PutDevis [client=" + client + ", devis=" + devis + ", gamme=" + gamme + ", modules=" + modules + "]";
 	}
 
-<<<<<<< HEAD
-
-=======
-	
->>>>>>> b7a5a6dcec5427acb54b2034e753f5ea0d018890
 }
