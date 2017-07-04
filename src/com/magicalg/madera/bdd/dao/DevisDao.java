@@ -199,7 +199,6 @@ public class DevisDao {
 		if (!client.equals(devis.getClient())) {
 			ClientDao.updateCient(client);
 		}
-		System.out.println("client update ok");
 		String sql = "UPDATE devis SET motif_devis = ?, status_devis = ?, datefin_devis = ?, tempsconstr_devis = ?,"
 				+ " prixttc_devis = ?, prixht_devis = ?, margeCom_devis = ?, margeEnt_devis = ?, reference_gamme = ? WHERE reference_devis = ?";
 		Connection con = ConnectionBdd.connect();
@@ -245,8 +244,7 @@ public class DevisDao {
 		}
 		stmt.setString(9, devis.getGamme().getIdReference());
 		stmt.setString(10, devis.getDevis().getReference());
-		int check = stmt.executeUpdate();
-		System.out.println("check update module : " + check);
+		stmt.executeUpdate();
 		stmt.close();
 		updateChoixModuleForDevis(devis, con);
 		con.close();
@@ -272,7 +270,7 @@ public class DevisDao {
 		String sqlTypeAngle = "SELECT id_angle FROM angle WHERE type_angle = ?";
 
 		for (Modules refModule : devis.getModules()) {
-			// Section Module A
+			//Section Module A
 			PreparedStatement stmt = con.prepareStatement(sqlGetSection);
 			stmt.setString(1, refModule.getModuleA().getSection());
 			ResultSet set = stmt.executeQuery();
@@ -331,7 +329,6 @@ public class DevisDao {
 		String sqlTypeAngle = "SELECT id_angle FROM angle WHERE type_angle = ?";
 		List<Modules> lstUpdate = new ArrayList<>();
 		List<Modules> lstInsert = new ArrayList<>();
-		System.out.println("Dans update choix module list devis : " + devis.getModules().size());
 		for (Modules module : devis.getModules()) {
 			if (null == module.getIdChoixModule()) {
 				lstInsert.add(module);
@@ -339,8 +336,6 @@ public class DevisDao {
 				lstUpdate.add(module);
 			}
 		}
-		System.out.println("***** lstInsert.size() : " + lstInsert.size());
-		System.out.println("***** lstUpdate.size() : " + lstUpdate.size());
 		if(lstUpdate.size() > 0){
 			for (Modules up : lstUpdate) {
 				// Section Module A
@@ -350,10 +345,8 @@ public class DevisDao {
 				while (set.next()) {
 					sectionA = set.getInt("id_section");
 				}
-				System.out.println("***** sectionA : " + sectionA);
 				stmt.close();
 				// section Module B
-				System.out.println("***** up.getModuleB().getId() : " + up.getModuleB().getId());
 				if (null != up.getModuleB().getId()) {
 					PreparedStatement stmt2 = con.prepareStatement(sqlGetSection);
 					stmt2.setString(1, up.getModuleB().getSection());
@@ -361,7 +354,6 @@ public class DevisDao {
 					while (set2.next()) {
 						sectionB = set2.getInt("id_section");
 					}
-					System.out.println("***** sectionB : " + sectionB);
 					stmt2.close();
 	
 					// type d'angle
@@ -371,7 +363,6 @@ public class DevisDao {
 					while (set3.next()) {
 						typeAngle = set3.getInt("id_angle");
 					}
-					System.out.println("***** typeAngle : " + typeAngle );
 					stmt3.close();
 				}
 				// Enregistrement devis_module_choix
@@ -397,16 +388,13 @@ public class DevisDao {
 			for (Modules ins : lstInsert) {
 				// Section Module A
 				PreparedStatement stmt = con.prepareStatement(sqlGetSection);
-				System.out.println("ins.getModuleA().getSection() : " + ins.getModuleA().getSection());
 				stmt.setString(1, ins.getModuleA().getSection());
 				ResultSet set = stmt.executeQuery();
 				while (set.next()) {
 					sectionA = set.getInt("id_section");
 				}
-				System.out.println("***** sectionA : " + sectionA);
 				stmt.close();
 				// section Module B
-				System.out.println("***** ins.getModuleB().getId() : " + ins.getModuleB().getId());
 				if (null != ins.getModuleB().getId()) {
 					PreparedStatement stmt2 = con.prepareStatement(sqlGetSection);
 					stmt2.setString(1, ins.getModuleB().getSection());
@@ -414,7 +402,6 @@ public class DevisDao {
 					while (set2.next()) {
 						sectionB = set2.getInt("id_section");
 					}
-					System.out.println("***** sectionB : " + sectionB);
 					stmt2.close();
 	
 					// type d'angle
@@ -424,7 +411,6 @@ public class DevisDao {
 					while (set3.next()) {
 						typeAngle = set3.getInt("id_angle");
 					}
-					System.out.println("***** typeAngle : " + typeAngle);
 					stmt3.close();
 				}
 				// Enregistrement devis_module_choix
@@ -445,6 +431,8 @@ public class DevisDao {
 		}
 	}
 
+	
+	
 	/**
 	 * INSERT devis pour le devis
 	 * 
@@ -525,7 +513,6 @@ public class DevisDao {
 		PreparedStatement stmt = con.prepareStatement(sql);
 		stmt.setString(1, reference);
 		ResultSet res = stmt.executeQuery();
-		System.out.println("Dans requete devis id module");
 		while (res.next()) {
 			mod = new Modules();
 			mod.setIdChoixModule(res.getInt("idChoixModule"));
@@ -537,8 +524,6 @@ public class DevisDao {
 			mod.getModuleB().setLongueur(res.getInt("longueurA"));
 			mod.setTypeAngle(res.getString("type_angle"));
 			mod.setAngle(res.getInt("angle"));
-			System.out.println("************ module : **********");
-			System.out.println(mod);
 			lstDevisModuleChoix.add(mod);
 		}
 

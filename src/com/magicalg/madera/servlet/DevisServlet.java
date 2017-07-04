@@ -123,7 +123,6 @@ public class DevisServlet extends HttpServlet {
 				String json = RequestJsonHelper.getJsonFromRequest(request);
 				ObjectMapper mapper = new ObjectMapper();
 				PutDevis devis = mapper.readValue(new StringReader(json), PutDevis.class);
-				System.out.println("********** devis : "+devis);
 				DevisDao.updateDevis(devis);
 				response.getWriter().append("OK");
 			}
