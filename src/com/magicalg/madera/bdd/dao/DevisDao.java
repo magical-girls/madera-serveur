@@ -1,5 +1,7 @@
 package com.magicalg.madera.bdd.dao;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -269,48 +271,50 @@ public class DevisDao {
 		String sqlGetSection = "SELECT id_section FROM section WHERE nom_section = ?";
 		String sqlTypeAngle = "SELECT id_angle FROM angle WHERE type_angle = ?";
 
-		for (Modules refModule : devis.getModules()) {
-			//Section Module A
-			PreparedStatement stmt = con.prepareStatement(sqlGetSection);
-			stmt.setString(1, refModule.getModuleA().getSection());
-			ResultSet set = stmt.executeQuery();
-			while (set.next()) {
-				sectionA = set.getInt("id_section");
-			}
-			stmt.close();
-			// section Module B
-			if (null != refModule.getModuleB().getId()) {
-				PreparedStatement stmt2 = con.prepareStatement(sqlGetSection);
-				stmt2.setString(1, refModule.getModuleB().getSection());
-				ResultSet set2 = stmt2.executeQuery();
-				while (set2.next()) {
-					sectionB = set2.getInt("id_section");
+		if(devis.getModules().size() > 0 ){
+			for (Modules refModule : devis.getModules()) {
+				//Section Module A
+				PreparedStatement stmt = con.prepareStatement(sqlGetSection);
+				stmt.setString(1, refModule.getModuleA().getSection());
+				ResultSet set = stmt.executeQuery();
+				while (set.next()) {
+					sectionA = set.getInt("id_section");
 				}
-				stmt2.close();
-
-				// type d'angle
-				PreparedStatement stmt3 = con.prepareStatement(sqlTypeAngle);
-				stmt3.setString(1, refModule.getTypeAngle());
-				ResultSet set3 = stmt3.executeQuery();
-				while (set3.next()) {
-					typeAngle = set3.getInt("id_angle");
+				stmt.close();
+				// section Module B
+				if (null != refModule.getModuleB().getId()) {
+					PreparedStatement stmt2 = con.prepareStatement(sqlGetSection);
+					stmt2.setString(1, refModule.getModuleB().getSection());
+					ResultSet set2 = stmt2.executeQuery();
+					while (set2.next()) {
+						sectionB = set2.getInt("id_section");
+					}
+					stmt2.close();
+	
+					// type d'angle
+					PreparedStatement stmt3 = con.prepareStatement(sqlTypeAngle);
+					stmt3.setString(1, refModule.getTypeAngle());
+					ResultSet set3 = stmt3.executeQuery();
+					while (set3.next()) {
+						typeAngle = set3.getInt("id_angle");
+					}
+					stmt3.close();
 				}
-				stmt3.close();
+				// Enregistrement devis_module_choix
+				String sqlDevisMod = "INSERT INTO devis_module_choix (id_devis, moduleA, id_sectionA,"
+						+ "longueurA, moduleB, id_sectionB, longueurB, id_angle, angle) VALUES (?,?,?,?,?,?,?,?,?)";
+				PreparedStatement stmtDevMod = con.prepareStatement(sqlDevisMod);
+				stmtDevMod.setString(1, devis.getReferenceDevis());
+				stmtDevMod.setString(2, refModule.getModuleA().getId());
+				stmtDevMod.setInt(3, sectionA);
+				stmtDevMod.setInt(4, refModule.getModuleA().getLongueur());
+				stmtDevMod.setString(5, refModule.getModuleB().getId());
+				stmtDevMod.setObject(6, sectionB);
+				stmtDevMod.setObject(7, refModule.getModuleB().getLongueur());
+				stmtDevMod.setObject(8, typeAngle);
+				stmtDevMod.setObject(9, refModule.getAngle());
+				stmtDevMod.executeUpdate();
 			}
-			// Enregistrement devis_module_choix
-			String sqlDevisMod = "INSERT INTO devis_module_choix (id_devis, moduleA, id_sectionA,"
-					+ "longueurA, moduleB, id_sectionB, longueurB, id_angle, angle) VALUES (?,?,?,?,?,?,?,?,?)";
-			PreparedStatement stmtDevMod = con.prepareStatement(sqlDevisMod);
-			stmtDevMod.setString(1, devis.getReferenceDevis());
-			stmtDevMod.setString(2, refModule.getModuleA().getId());
-			stmtDevMod.setInt(3, sectionA);
-			stmtDevMod.setInt(4, refModule.getModuleA().getLongueur());
-			stmtDevMod.setString(5, refModule.getModuleB().getId());
-			stmtDevMod.setObject(6, null, sectionB);
-			stmtDevMod.setObject(7, null, refModule.getModuleB().getLongueur());
-			stmtDevMod.setObject(8, null, typeAngle);
-			stmtDevMod.setObject(9, null, refModule.getAngle());
-			stmtDevMod.executeUpdate();
 		}
 	}
 
@@ -565,4 +569,13 @@ public class DevisDao {
 		return lstComposant;
 	}
 
+	public static void insertPDF(Integer client, File file) throws Exception{
+		String sql = "INSERT INTO pdf (id_client, devis_pdf) VALUES (?,?);";
+		Connection con = ConnectionBdd.connect();
+		PreparedStatement stmt = con.prepareStatement(sql);
+		stmt.setInt(1, client);
+		FileInputStream in = new FileInputStream(file);
+		stmt.setBinaryStream(2, in, (int) file.length());
+		stmt.executeUpdate();
+	}
 }

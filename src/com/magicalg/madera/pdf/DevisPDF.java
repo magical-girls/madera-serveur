@@ -16,25 +16,26 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.magicalg.madera.entity.Angle;
 import com.magicalg.madera.entity.Composant;
 import com.magicalg.madera.entity.Module;
 import com.magicalg.madera.model.DevisId;
+import com.magicalg.madera.model.Modules;
 
 public class DevisPDF {
 
+	public static final String TMP_DIR = System.getProperty("java.io.tmpdir");
 	private static Document document;
 	private static DevisId devis;
 	private static PdfPTable table;
 	private static float TVA = 1.2f;
 	private static float totalHT = 0f;
 	private static float totalTTC = 0f;
-	private static String FILE = "devis.pdf";
+	private static String FILE = TMP_DIR + "devis.pdf";
 	private static Font catFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
 	private static Font smallBold = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
 	private static Font nameFont = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD, BaseColor.BLUE);
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
-
+	
 	public static void main(String[] args) {
 
 	}
@@ -47,7 +48,7 @@ public class DevisPDF {
 		try {
 			document = new Document();
 			if (!devis.getClient().getNom().isEmpty() && devis.getClient().getNom() != null) {
-				FILE = devis.getClient().getNom() + "_devis" + ".pdf";
+				FILE = TMP_DIR + devis.getClient().getNom() + "_devis" + ".pdf";
 			}
 			PdfWriter.getInstance(document, new FileOutputStream(FILE));
 			document.open();
@@ -141,7 +142,6 @@ public class DevisPDF {
 
 		addGamme();
 		addListModule();
-		addListAngle();
 		addListComposant();
 		addFooterTotal();
 		content.add(table);
@@ -189,21 +189,21 @@ public class DevisPDF {
 		c3.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.addCell(c3);
 
-		if (!devis.getLstModule().isEmpty()) {
-//			for (Module module : devis.getLstModule()) {
-//				c3 = new PdfPCell(new Phrase(module.getIdReference()));
-//				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
-//				table.addCell(c3);
-//				c3 = new PdfPCell(new Phrase(module.getCommentaire()));
-//				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
-//				table.addCell(c3);
-//				c3 = new PdfPCell(new Phrase(" "));
-//				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
-//				table.addCell(c3);
-//				c3 = new PdfPCell(new Phrase(" "));
-//				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
-//				table.addCell(c3);
-//			}
+		if (!devis.getModules().isEmpty()) {
+			for (Modules module : devis.getModules()) {
+				c3 = new PdfPCell(new Phrase(module.getModuleA().getId()));
+				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table.addCell(c3);
+				c3 = new PdfPCell(new Phrase(module.getModuleB().getId()));
+				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table.addCell(c3);
+				c3 = new PdfPCell(new Phrase(" "));
+				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table.addCell(c3);
+				c3 = new PdfPCell(new Phrase(" "));
+				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table.addCell(c3);
+			}
 		}
 	}
 
@@ -219,8 +219,8 @@ public class DevisPDF {
 		c3.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.addCell(c3);
 
-		if (!devis.getLstComposant().isEmpty()) {
-			for (Composant composant : devis.getLstComposant()) {
+		if (!devis.getComposants().isEmpty()) {
+			for (Composant composant : devis.getComposants()) {
 				c3 = new PdfPCell(new Phrase(composant.getIdReference()));
 				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
 				table.addCell(c3);
@@ -238,37 +238,6 @@ public class DevisPDF {
 				table.addCell(c3);
 			}
 		}
-	}
-
-	private static void addListAngle() {
-		PdfPCell c3 = new PdfPCell(new Phrase("Vos angles choisis : "));
-		c3.setHorizontalAlignment(Element.ALIGN_LEFT);
-		c3.setColspan(2);
-		table.addCell(c3);
-		c3 = new PdfPCell(new Phrase(" "));
-		c3.setHorizontalAlignment(Element.ALIGN_CENTER);
-		table.addCell(c3);
-		c3 = new PdfPCell(new Phrase(" "));
-		c3.setHorizontalAlignment(Element.ALIGN_CENTER);
-		table.addCell(c3);
-
-//		if (!devis.getLstAngle().isEmpty()) {
-//			for (Angle angle : devis.getLstAngle()) {
-//				c3 = new PdfPCell(new Phrase(" "));
-//				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
-//				table.addCell(c3);
-//				c3 = new PdfPCell(new Phrase("Angle entre " + angle.getModuleA() + " et " + angle.getModuleB() + " : "
-//						+ angle.getDegre() + "°"));
-//				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
-//				table.addCell(c3);
-//				c3 = new PdfPCell(new Phrase(" "));
-//				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
-//				table.addCell(c3);
-//				c3 = new PdfPCell(new Phrase(" "));
-//				c3.setHorizontalAlignment(Element.ALIGN_CENTER);
-//				table.addCell(c3);
-//			}
-//		}
 	}
 
 	private static void addFooterTotal() {

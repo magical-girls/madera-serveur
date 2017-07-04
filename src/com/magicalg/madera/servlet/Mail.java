@@ -1,5 +1,6 @@
 package com.magicalg.madera.servlet;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 
@@ -10,8 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.magicalg.madera.bdd.dao.DevisDao;
-import com.magicalg.madera.entity.Module;
-import com.magicalg.madera.entity.Section;
 import com.magicalg.madera.helper.CheckTokenHelper;
 import com.magicalg.madera.model.DevisId;
 import com.magicalg.madera.pdf.DevisPDF;
@@ -23,7 +22,7 @@ import com.magicalg.madera.pdf.DevisPDF;
 public class Mail extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    
+	
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -63,10 +62,12 @@ public class Mail extends HttpServlet {
 								+ "<td>"+ devis.getDevis().getStatus()+"</td>"
 								+ "</tr>"
 								+ "</table>"
-								+ "<p style=\"text-align : left\">Votre devis en pièce jointe. <br/>Merci de votre confiance, l'équipe MADERA</p>"
+								+ "<p style=\"text-align : left\">Merci de votre confiance, l'équipe MADERA</p>"
 								+ "</html>";
 						DevisPDF pdf = new DevisPDF(devis);
-						com.magicalg.madera.helper.Mail.sendMail(devis.getClient().getMail(), "Devis Madera", html, pdf.getDevisPdf());
+						File file = pdf.getDevisPdf();
+						DevisDao.insertPDF(devis.getClient().getId(), file);
+						com.magicalg.madera.helper.Mail.sendMail(devis.getClient().getMail(), "Devis Madera", html, file);
 						response.getWriter().append(html);
 					} catch (Exception e) {
 						e.printStackTrace();
