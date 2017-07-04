@@ -50,6 +50,5 @@ public class PutDevis {
 		return "PutDevis [client=" + client + ", devis=" + devis + ", gamme=" + gamme + ", modules=" + modules + "]";
 	}
 
-	
 
 }

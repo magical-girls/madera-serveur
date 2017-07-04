@@ -14,8 +14,8 @@ public class DevisId {
 	private Salarie salarie;
 	private Devis devis;
 	private Gamme gamme;
-	private List<Modules> lstModule;
-	private List<Composant> lstComposant;
+	private List<Modules> modules;
+	private List<Composant> composants;
 
 	public Client getClient() {
 		return client;
@@ -50,26 +50,26 @@ public class DevisId {
 	}
 
 
-	public List<Modules> getLstModule() {
-		return lstModule;
+	public List<Modules> getModules() {
+		return modules;
 	}
 
-	public void setLstModule(List<Modules> lstModule) {
-		this.lstModule = lstModule;
+	public void setLstModule(List<Modules> modules) {
+		this.modules = modules;
 	}
 
-	public List<Composant> getLstComposant() {
-		return lstComposant;
+	public List<Composant> getComposants() {
+		return composants;
 	}
 
-	public void setLstComposant(List<Composant> lstComposant) {
-		this.lstComposant = lstComposant;
+	public void setLstComposant(List<Composant> composants) {
+		this.composants = composants;
 	}
 
 	@Override
 	public String toString() {
 		return "DevisId [client=" + client + ", salarie=" + salarie + ", devis=" + devis + ", gamme=" + gamme
-				+ ", lstModule=" + lstModule + ", lstComposant=" + lstComposant + "]";
+				+ ", modules=" + modules + ", composants=" + composants + "]";
 	}
 
 }
