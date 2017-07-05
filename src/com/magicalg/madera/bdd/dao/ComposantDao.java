@@ -17,7 +17,7 @@ public class ComposantDao {
 	public static List<ComposantWithModule> getAllComposant() throws Exception {
 		List<ComposantWithModule> composantWithModule = new ArrayList<>();
 		ComposantWithModule composant = null;
-		String sql = "SELECT reference_composant as idReference, nom_composant as nom, "
+		String sql = "SELECT reference_composant as idReference, nom_composant as nom, prixht_composant as prixHT, "
 				+ "commentaire_composant as commentaire FROM composant WHERE suppression_composant = 0";
 		Connection con = ConnectionBdd.connect();
 		PreparedStatement stmt = con.prepareStatement(sql);
@@ -26,6 +26,7 @@ public class ComposantDao {
 			composant = new ComposantWithModule();
 			composant.setIdReference(res.getString("idReference"));
 			composant.setNom(res.getString("nom"));
+			composant.setPrixHT(res.getFloat("prixHT"));
 			composant.setCommentaire(res.getString("commentaire"));
 			composant.setIdModule(getListIdModule(res.getString("idReference"), con));
 			composantWithModule.add(composant);
