@@ -14,25 +14,6 @@ public class Fournisseur {
 	private String contactMail;
 	private String horaires;
 
-	public Fournisseur() {
-	}
-
-	public Fournisseur(Integer id, String societe, String tel, String adresse, String pays, String categorie,
-			String contactTel, String contactNom, String contactPrenom, String contactMail, String horaires) {
-		super();
-		this.id = id;
-		this.societe = societe;
-		this.tel = tel;
-		this.adresse = adresse;
-		this.pays = pays;
-		this.categorie = categorie;
-		this.contactTel = contactTel;
-		this.contactNom = contactNom;
-		this.contactPrenom = contactPrenom;
-		this.contactMail = contactMail;
-		this.horaires = horaires;
-	}
-
 	public Integer getId() {
 		return id;
 	}
