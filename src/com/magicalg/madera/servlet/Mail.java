@@ -1,6 +1,5 @@
 package com.magicalg.madera.servlet;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 
@@ -13,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.magicalg.madera.bdd.dao.DevisDao;
 import com.magicalg.madera.helper.CheckTokenHelper;
 import com.magicalg.madera.model.DevisId;
-import com.magicalg.madera.pdf.DevisPDF;
+import com.magicalg.madera.model.Modules;
 
 /**
  * Servlet implementation class Mail
@@ -52,22 +51,24 @@ public class Mail extends HttpServlet {
 								+ "<br/>" + devis.getClient().getMail()
 								+ "<br/>" + devis.getClient().getTel() + "</p>"
 								+ "<br/>"
+								+ "<p>Voici le status de l'étude de votre devis. Le détail complet sera envoyé par courrier à votre adresse postale</p>"
 								+ "<table>"
 								+ "<tr>"
-								+ "<td>Référence : </td>"
-								+ "<td>"+ devis.getDevis().getReference() +"</td>"
+								+ "<td><b>Référence : </b></td>"
+								+ "<td><b>Statut : </b></td>"
 								+ "</tr>"
 								+ "<tr>"
-								+ "<td>Statut : </td>"
-								+ "<td>"+ devis.getDevis().getStatus()+"</td>"
+								+ "<td style=\"color : blue\">"+ devis.getDevis().getReference() +"</td>"
+								+ "<td style=\"color : blue\">"+ devis.getDevis().getStatus()+"</td>"
 								+ "</tr>"
 								+ "</table>"
+								+ "<br/>"
 								+ "<p style=\"text-align : left\">Merci de votre confiance, l'équipe MADERA</p>"
 								+ "</html>";
-						DevisPDF pdf = new DevisPDF(devis);
-						File file = pdf.getDevisPdf();
-						DevisDao.insertPDF(devis.getClient().getId(), file);
-						com.magicalg.madera.helper.Mail.sendMail(devis.getClient().getMail(), "Devis Madera", html, file);
+//						DevisPDF pdf = new DevisPDF(devis);
+//						File file = pdf.getDevisPdf();
+//						DevisDao.insertPDF(devis.getClient().getId(), file);
+						com.magicalg.madera.helper.Mail.sendMail(devis.getClient().getMail(), "Devis Madera", html);
 						response.getWriter().append(html);
 					} catch (Exception e) {
 						e.printStackTrace();
