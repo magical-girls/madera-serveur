@@ -40,10 +40,10 @@ public class FournisseurServlet extends HttpServlet {
 					List<Fournisseur> fs = FournisseurDao.getAllFournisseur();
 					response.getWriter().append(mapper.writeValueAsString(fs));
 				} else {
-//					ObjectMapper mapper = new ObjectMapper();
-//					ComposantWithModule composant = ComposantDao.getComposantByIdRef(request.getParameter("id"));
-//					response.getWriter().append(mapper.writeValueAsString(composant));
-					response.getWriter().append("PAS DE FOUNISSEUR PAR ID");
+					ObjectMapper mapper = new ObjectMapper();
+					Fournisseur f = FournisseurDao.getFournisseur(Integer.valueOf(request.getParameter("id")));
+					response.getWriter().append(mapper.writeValueAsString(f));
+//					response.getWriter().append("PAS DE FOUNISSEUR PAR ID");
 				}
 			}
 		} catch (Exception e1) {

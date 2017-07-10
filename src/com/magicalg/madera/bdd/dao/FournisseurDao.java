@@ -29,4 +29,29 @@ public class FournisseurDao {
 		}
 		return fs;
 	}
+	
+	public static Fournisseur getFournisseur(Integer fr) throws Exception{
+		Fournisseur f =null;
+		
+		String sql = "SELECT * FROM fournisseur WHERE id_fournisseur = ?";
+		Connection con = ConnectionBdd.connect();
+		PreparedStatement stmt = con.prepareStatement(sql);
+		stmt.setInt(1, fr);
+		ResultSet rs = stmt.executeQuery();
+		while(rs.next()){
+			f = new Fournisseur();
+			f.setAdresse(rs.getString("adresse_fournisseur"));
+			f.setId(rs.getInt("id_fournisseur"));
+			f.setSociete(rs.getString("societe_fournisseur"));
+			f.setTel(rs.getString("tel_fournisseur"));
+			f.setPays(rs.getString("pays_fournisseur"));
+			f.setCategorie(rs.getString("categorie_fournisseur"));
+			f.setContactTel(rs.getString("contacttel_fournisseur"));
+			f.setContactNom(rs.getString("contactnom_fournisseur"));
+			f.setContactPrenom(rs.getString("contactprenom_fournisseur"));
+			f.setContactMail(rs.getString("contactmail_fournisseur"));
+			f.setHoraires(rs.getString("horaires_fournisseur"));
+		}
+		return f;
+	}
 }
